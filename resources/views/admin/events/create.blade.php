@@ -338,8 +338,8 @@
                         </div>
 
                         <!-- Form Actions -->
-                        <div class="form-actions text-center">
-                            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 me-3">
+                        <div class="form-actions text-center mt-5 pt-4 border-top">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 me-3 shadow-lg">
                                 <i class="bi bi-check-circle me-2"></i>Simpan Event
                             </button>
                             <a href="{{ route('events.index') }}" class="btn btn-outline-secondary btn-lg rounded-pill px-5">
@@ -478,13 +478,36 @@
 }
 
 /* Form Actions */
+.form-actions {
+    background: linear-gradient(to bottom, transparent, #f8f9fa);
+    padding: 2rem 0 1rem 0;
+    margin-top: 2rem;
+}
+
 .form-actions .btn {
     transition: all 0.3s ease;
+    font-weight: 600;
+    min-width: 200px;
+}
+
+.form-actions .btn-primary {
+    background: linear-gradient(135deg, #1976d2 0%, #3F3F9C 100%);
+    border: none;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 5px 15px rgba(25, 118, 210, 0.4);
+    }
+    50% {
+        box-shadow: 0 8px 25px rgba(25, 118, 210, 0.6);
+    }
 }
 
 .form-actions .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
 }
 
 /* Responsive Adjustments */
