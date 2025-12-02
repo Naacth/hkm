@@ -157,12 +157,24 @@
                         
                         <!-- Event Actions -->
                         <div class="event-actions">
+                            {{-- Registration Status Info --}}
+                            @if($event->registration_start_date || $event->registration_end_date)
+                                <div class="alert alert-info mb-3">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <small>{{ $event->getRegistrationStatusMessage() }}</small>
+                                </div>
+                            @endif
+
                             @if($event->event_type === 'public')
                                 {{-- Public Event: Show Google Form Link --}}
-                                @if($event->google_form_link)
+                                @if($event->isRegistrationOpen() && $event->google_form_link)
                                     <a href="{{ $event->google_form_link }}" target="_blank" class="btn btn-info btn-sm rounded-pill w-100 mb-2">
                                         <i class="bi bi-box-arrow-up-right me-2"></i>Daftar via Google Form
                                     </a>
+                                @elseif(!$event->isRegistrationOpen())
+                                    <button class="btn btn-secondary btn-sm rounded-pill w-100 mb-2" disabled>
+                                        <i class="bi bi-lock me-2"></i>Pendaftaran Ditutup
+                                    </button>
                                 @else
                                     <button class="btn btn-secondary btn-sm rounded-pill w-100 mb-2" disabled>
                                         <i class="bi bi-info-circle me-2"></i>Link Pendaftaran Belum Tersedia
@@ -170,15 +182,25 @@
                                 @endif
                             @else
                                 {{-- Free/Paid Event: Show Internal Registration --}}
-                                @auth
-                                    <a href="{{ route('event-registrations.create', $event) }}" class="btn btn-success btn-sm rounded-pill w-100 mb-2">
-                                        <i class="bi bi-calendar-plus me-2"></i>Daftar Event
-                                    </a>
+                                @if($event->isRegistrationOpen())
+                                    @auth
+                                        <a href="{{ route('event-registrations.create', $event) }}" class="btn btn-success btn-sm rounded-pill w-100 mb-2">
+                                            <i class="bi bi-calendar-plus me-2"></i>Daftar Event
+                                        </a>
+                                    @else
+                                        <a href="{{ route('login') }}?redirect={{ urlencode(route('event-registrations.create', $event)) }}" class="btn btn-primary btn-sm rounded-pill w-100 mb-2">
+                                            <i class="bi bi-box-arrow-in-right me-2"></i>Login untuk Daftar
+                                        </a>
+                                    @endauth
+                                @elseif($event->isRegistrationNotStarted())
+                                    <button class="btn btn-warning btn-sm rounded-pill w-100 mb-2" disabled>
+                                        <i class="bi bi-clock me-2"></i>Pendaftaran Belum Dibuka
+                                    </button>
                                 @else
-                                    <a href="{{ route('login') }}?redirect={{ urlencode(route('event-registrations.create', $event)) }}" class="btn btn-primary btn-sm rounded-pill w-100 mb-2">
-                                        <i class="bi bi-box-arrow-in-right me-2"></i>Login untuk Daftar
-                                    </a>
-                                @endauth
+                                    <button class="btn btn-secondary btn-sm rounded-pill w-100 mb-2" disabled>
+                                        <i class="bi bi-lock me-2"></i>Pendaftaran Ditutup
+                                    </button>
+                                @endif
                             @endif
                             
                             @if($event->whatsapp_group_link)

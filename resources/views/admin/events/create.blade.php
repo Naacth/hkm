@@ -72,6 +72,44 @@
                             @enderror
                         </div>
 
+                        <!-- Registration Period -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="registration_start_date" class="form-label fw-semibold">
+                                        <i class="bi bi-calendar-check text-success me-2"></i>Tanggal Buka Pendaftaran
+                                        <span class="text-muted small">(Opsional)</span>
+                                    </label>
+                                    <input type="datetime-local" 
+                                           name="registration_start_date" 
+                                           id="registration_start_date"
+                                           class="form-control form-control-lg @error('registration_start_date') is-invalid @enderror" 
+                                           value="{{ old('registration_start_date') }}">
+                                    <div class="form-text">Kosongkan jika pendaftaran langsung dibuka</div>
+                                    @error('registration_start_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="registration_end_date" class="form-label fw-semibold">
+                                        <i class="bi bi-calendar-x text-danger me-2"></i>Tanggal Tutup Pendaftaran
+                                        <span class="text-muted small">(Opsional)</span>
+                                    </label>
+                                    <input type="datetime-local" 
+                                           name="registration_end_date" 
+                                           id="registration_end_date"
+                                           class="form-control form-control-lg @error('registration_end_date') is-invalid @enderror" 
+                                           value="{{ old('registration_end_date') }}">
+                                    <div class="form-text">Pendaftaran otomatis tertutup setelah tanggal ini</div>
+                                    @error('registration_end_date')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Google Form Link -->
                         <div class="form-group mb-4">
                             <label for="google_form_link" class="form-label fw-semibold">

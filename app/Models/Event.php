@@ -9,12 +9,15 @@ class Event extends Model
     protected $fillable = [
         'title', 'description', 'image', 'date', 'location', 'status', 'event_type', 'is_paid', 'price', 'qris_image_path', 'certificate_template', 'google_form_link', 'whatsapp_group_link',
         'seo_title', 'seo_description', 'seo_jsonld',
-        'cert_x', 'cert_y', 'cert_font_size', 'cert_color'
+        'cert_x', 'cert_y', 'cert_font_size', 'cert_color',
+        'registration_start_date', 'registration_end_date'
     ];
 
     protected $casts = [
         'is_paid' => 'boolean',
         'price' => 'decimal:2',
+        'registration_start_date' => 'datetime',
+        'registration_end_date' => 'datetime',
     ];
 
     /**
@@ -74,6 +77,75 @@ class Event extends Model
     public function isPaid()
     {
         return $this->event_type === 'paid';
+    }
+
+    /**
+     * Check if registration is open
+     */
+    public function isRegistrationOpen()
+    {
+        $now = now();
+        
+        // If no registration dates set, check event status
+        if (!$this->registration_start_date && !$this->registration_end_date) {
+            return $this->status === 'active' && $this->isUpcoming();
+        }
+        
+        // Check if within registration period
+        $afterStart = !$this->registration_start_date || $now >= $this->registration_start_date;
+        $beforeEnd = !$this->registration_end_date || $now <= $this->registration_end_date;
+        
+        return $this->status === 'active' && $afterStart && $beforeEnd;
+    }
+
+    /**
+     * Check if registration has not started yet
+     */
+    public function isRegistrationNotStarted()
+    {
+        if (!$this->registration_start_date) {
+            return false;
+        }
+        
+        return now() < $this->registration_start_date;
+    }
+
+    /**
+     * Check if registration has closed
+     */
+    public function isRegistrationClosed()
+    {
+        if (!$this->registration_end_date) {
+            return $this->status !== 'active' || !$this->isUpcoming();
+        }
+        
+        return now() > $this->registration_end_date || $this->status !== 'active';
+    }
+
+    /**
+     * Get registration status message
+     */
+    public function getRegistrationStatusMessage()
+    {
+        if ($this->isRegistrationNotStarted()) {
+            return 'Pendaftaran belum dibuka. Dibuka pada ' . $this->registration_start_date->format('d F Y, H:i');
+        }
+        
+        if ($this->isRegistrationClosed()) {
+            if ($this->registration_end_date && now() > $this->registration_end_date) {
+                return 'Pendaftaran telah ditutup pada ' . $this->registration_end_date->format('d F Y, H:i');
+            }
+            return 'Pendaftaran telah ditutup';
+        }
+        
+        if ($this->isRegistrationOpen()) {
+            if ($this->registration_end_date) {
+                return 'Pendaftaran dibuka sampai ' . $this->registration_end_date->format('d F Y, H:i');
+            }
+            return 'Pendaftaran dibuka';
+        }
+        
+        return 'Pendaftaran tidak tersedia';
     }
 
     /**
