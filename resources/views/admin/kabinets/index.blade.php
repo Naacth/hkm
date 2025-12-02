@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Kelola Kabinet | Admin')
+@section('page-title', 'Kelola Kabinet')
 @section('content')
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -31,7 +32,7 @@
                         <td>{{ $kabinet->position }}</td>
                         <td>
                             @if($kabinet->photo)
-                                <img src="{{ asset('storage/'.$kabinet->photo) }}" width="60" class="rounded shadow">
+                                <img src="{{ asset('uploads/'.$kabinet->photo) }}" width="60" class="rounded shadow">
                             @endif
                         </td>
                         <td>{{ Str::limit($kabinet->description, 50) }}</td>

@@ -38,7 +38,7 @@ class AboutController extends Controller
             'milestones' => 'nullable|array',
         ]);
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('abouts', 'public');
+            $validated['image'] = $request->file('image')->store('abouts', 'public_direct');
         }
         $validated['values'] = $request->input('values', []);
         $validated['milestones'] = $request->input('milestones', []);
@@ -76,7 +76,7 @@ class AboutController extends Controller
             'milestones' => 'nullable|array',
         ]);
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('abouts', 'public');
+            $validated['image'] = $request->file('image')->store('abouts', 'public_direct');
         }
         $validated['values'] = $request->input('values', []);
         $validated['milestones'] = $request->input('milestones', []);

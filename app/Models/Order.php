@@ -17,6 +17,7 @@ class Order extends Model
         'total_price',
         'payment_method',
         'delivery_method',
+        'proof_of_payment_image_path',
         'status',
         'customer_name',
         'customer_phone',
@@ -25,10 +26,16 @@ class Order extends Model
         'customer_email',
         'customer_address',
         'notes',
+        'voucher_code',
+        'voucher_discount_percent',
+        'discount_amount',
+        'final_price',
     ];
 
     protected $casts = [
         'total_price' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'final_price' => 'decimal:2',
     ];
 
     /**

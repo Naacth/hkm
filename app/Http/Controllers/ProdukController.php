@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProdukController extends Controller
 {
@@ -38,16 +39,19 @@ class ProdukController extends Controller
             'periodic_support' => 'boolean',
             'support_24_7' => 'boolean',
             'features' => 'nullable|string',
-            'qris_image' => 'nullable|image',
+            'qris_image_path' => 'nullable|image',
             'whatsapp_link' => 'nullable|url',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string',
+            'seo_jsonld' => 'nullable|string',
         ]);
         
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('produks', 'public');
+            $validated['image'] = $request->file('image')->store('produks', 'public_direct');
         }
 
-        if ($request->hasFile('qris_image')) {
-            $validated['qris_image'] = $request->file('qris_image')->store('qris', 'public');
+        if ($request->hasFile('qris_image_path')) {
+            $validated['qris_image_path'] = $request->file('qris_image_path')->store('qris', 'public_direct');
         }
         
         Produk::create($validated);
@@ -84,16 +88,27 @@ class ProdukController extends Controller
             'periodic_support' => 'boolean',
             'support_24_7' => 'boolean',
             'features' => 'nullable|string',
-            'qris_image' => 'nullable|image',
+            'qris_image_path' => 'nullable|image',
             'whatsapp_link' => 'nullable|url',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string',
+            'seo_jsonld' => 'nullable|string',
         ]);
         
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('produks', 'public');
+            // Delete old image if exists
+            if ($produk->image) {
+                Storage::disk('public_direct')->delete($produk->image);
+            }
+            $validated['image'] = $request->file('image')->store('produks', 'public_direct');
         }
 
-        if ($request->hasFile('qris_image')) {
-            $validated['qris_image'] = $request->file('qris_image')->store('qris', 'public');
+        if ($request->hasFile('qris_image_path')) {
+            // Delete old QRIS image if exists
+            if ($produk->qris_image_path) {
+                Storage::disk('public_direct')->delete($produk->qris_image_path);
+            }
+            $validated['qris_image_path'] = $request->file('qris_image_path')->store('qris', 'public_direct');
         }
         
         $produk->update($validated);

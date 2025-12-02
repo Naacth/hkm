@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Produk extends Model
 {
     protected $fillable = [
-        'name', 'description', 'image', 'price', 'quality_guaranteed', 'periodic_support', 'support_24_7', 'features', 'qris_image', 'whatsapp_link'
+        'name', 'description', 'image', 'price', 'status', 'quality_guaranteed', 'periodic_support', 'support_24_7', 'features', 'qris_image_path', 'whatsapp_link',
+        'seo_title', 'seo_description', 'seo_jsonld'
     ];
 
     protected $casts = [
@@ -37,6 +38,6 @@ class Produk extends Model
      */
     public function getQrisUrlAttribute()
     {
-        return $this->qris_image ? asset('storage/' . $this->qris_image) : null;
+        return $this->qris_image_path ? asset('uploads/' . $this->qris_image_path) : null;
     }
 }

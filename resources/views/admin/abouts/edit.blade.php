@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Edit About | Admin')
+@section('page-title', 'Edit About')
 @section('content')
 <div class="container py-4">
     <h2 class="fw-bold mb-3">Edit About</h2>
@@ -18,7 +19,7 @@
             <label class="form-label">Gambar</label>
             <input type="file" name="image" class="form-control">
             @if($about->image)
-                <img src="{{ asset('storage/'.$about->image) }}" width="100" class="mt-2 rounded shadow">
+                <img src="{{ asset('uploads/'.$about->image) }}" width="100" class="mt-2 rounded shadow">
             @endif
         </div>
         <div class="mb-3">

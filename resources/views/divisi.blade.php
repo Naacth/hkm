@@ -63,7 +63,7 @@
                 <div class="card-header-gradient position-relative overflow-hidden" style="height: 120px; background: linear-gradient(135deg, #1976d2 0%, #3F3F9C 100%);">
                     <div class="position-absolute top-50 start-50 translate-middle">
                         @if($divisi->photo)
-                            <img src="{{ asset('storage/'.$divisi->photo) }}" 
+                            <img src="{{ asset('uploads/'.$divisi->photo) }}" 
                                  class="divisi-photo rounded-circle border-4 border-white shadow-lg" 
                                  style="width: 100px; height: 100px; object-fit: cover;">
                         @else

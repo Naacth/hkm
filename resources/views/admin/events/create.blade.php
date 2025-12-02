@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Tambah Event | Admin')
+@section('page-title', 'Tambah Event')
 @section('content')
 
 <!-- Admin Header -->
@@ -102,6 +103,115 @@
                             @enderror
                         </div>
 
+                        <!-- Event Payment Type -->
+                        <div class="form-group mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-currency-dollar text-primary me-2"></i>Tipe Event
+                            </label>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="radio" 
+                                               name="event_type" 
+                                               id="event_free" 
+                                               value="free"
+                                               {{ old('event_type', 'free') == 'free' ? 'checked' : '' }}
+                                               onchange="toggleEventTypeFields()"
+                                               required>
+                                        <label class="form-check-label" for="event_free">
+                                            <i class="bi bi-gift me-2"></i>Gratis
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="radio" 
+                                               name="event_type" 
+                                               id="event_paid" 
+                                               value="paid"
+                                               {{ old('event_type') == 'paid' ? 'checked' : '' }}
+                                               onchange="toggleEventTypeFields()"
+                                               required>
+                                        <label class="form-check-label" for="event_paid">
+                                            <i class="bi bi-currency-dollar me-2"></i>Berbayar
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="radio" 
+                                               name="event_type" 
+                                               id="event_public" 
+                                               value="public"
+                                               {{ old('event_type') == 'public' ? 'checked' : '' }}
+                                               onchange="toggleEventTypeFields()"
+                                               required>
+                                        <label class="form-check-label" for="event_public">
+                                            <i class="bi bi-globe me-2"></i>Publik
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            @error('event_type')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
+                            <div class="form-text mt-2">
+                                <strong>Gratis:</strong> Event gratis dengan pendaftaran internal<br>
+                                <strong>Berbayar:</strong> Event berbayar dengan sistem pembayaran<br>
+                                <strong>Publik:</strong> Event publik, pendaftaran via Google Form (tanpa sistem internal)
+                            </div>
+                        </div>
+
+                        <!-- Event Price (only show if paid) -->
+                        <div class="form-group mb-4" id="priceField" style="display: none;">
+                            <label for="price" class="form-label fw-semibold">
+                                <i class="bi bi-tag text-primary me-2"></i>Harga Event
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">Rp</span>
+                                <input type="number" 
+                                       name="price" 
+                                       id="price"
+                                       class="form-control form-control-lg @error('price') is-invalid @enderror" 
+                                       placeholder="Masukkan harga event"
+                                       value="{{ old('price') }}"
+                                       min="0"
+                                       step="1000">
+                            </div>
+                            <div class="form-text">
+                                Masukkan harga dalam rupiah (contoh: 50000 untuk Rp 50.000)
+                            </div>
+                            @error('price')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- QRIS Image -->
+                        <div class="form-group mb-4" id="qrisField" style="display: none;">
+                            <label for="qris_image_path" class="form-label fw-semibold">
+                                <i class="bi bi-qr-code text-success me-2"></i>Gambar QRIS
+                                <span class="text-muted small">(Opsional)</span>
+                            </label>
+                            <input type="file" 
+                                   name="qris_image_path" 
+                                   id="qris_image_path"
+                                   class="form-control form-control-lg @error('qris_image_path') is-invalid @enderror" 
+                                   accept="image/*"
+                                   onchange="previewQrisImage(this)">
+                            <div class="form-text">
+                                Upload gambar QRIS untuk pembayaran. Format yang didukung: JPG, PNG
+                            </div>
+                            @error('qris_image_path')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div class="image-preview mt-3" id="qrisImagePreview" style="display: none;">
+                                <img id="previewQrisImg" class="img-fluid rounded-3 shadow-sm" style="max-height: 200px;">
+                            </div>
+                        </div>
+
                         <!-- Event Image -->
                         <div class="form-group mb-4">
                             <label for="image" class="form-label fw-semibold">
@@ -138,6 +248,93 @@
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <!-- Certificate Template -->
+                        <div class="form-group mb-4">
+                            <label for="certificate_template" class="form-label fw-semibold">
+                                <i class="bi bi-award text-primary me-2"></i>Template Sertifikat
+                                <span class="text-muted small">(Opsional)</span>
+                            </label>
+                            <input type="file" 
+                                   name="certificate_template" 
+                                   id="certificate_template"
+                                   class="form-control form-control-lg @error('certificate_template') is-invalid @enderror" 
+                                   accept="image/*,.pdf">
+                            <div class="form-text">
+                                Upload template sertifikat untuk event ini. Format yang didukung: JPG, PNG, PDF
+                            </div>
+                            @error('certificate_template')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Certificate Settings -->
+                        <div class="form-group mb-4" id="certificateSettings" style="display: none;">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-gear text-primary me-2"></i>Konfigurasi Sertifikat
+                            </label>
+                            <div class="card bg-light border-0">
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="cert_x" class="form-label small">Posisi X (Horizontal)</label>
+                                            <input type="number" name="cert_x" id="cert_x" class="form-control" placeholder="Default: Center" value="{{ old('cert_x') }}">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="cert_y" class="form-label small">Posisi Y (Vertikal)</label>
+                                            <input type="number" name="cert_y" id="cert_y" class="form-control" placeholder="Default: Center" value="{{ old('cert_y') }}">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="cert_font_size" class="form-label small">Ukuran Font</label>
+                                            <input type="number" name="cert_font_size" id="cert_font_size" class="form-control" placeholder="Default: 60" value="{{ old('cert_font_size') }}">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="cert_color" class="form-label small">Warna Teks</label>
+                                            <input type="color" name="cert_color" id="cert_color" class="form-control form-control-color w-100" value="{{ old('cert_color', '#000000') }}" title="Pilih warna teks">
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2">
+                                        Atur posisi dan gaya teks nama peserta pada sertifikat. Biarkan kosong untuk menggunakan default.
+                                    </div>
+                                </div>
+                            </div>
+
+                        <!-- WhatsApp Group Link -->
+                        <div class="form-group mb-4">
+                            <label for="whatsapp_group_link" class="form-label fw-semibold">
+                                <i class="bi bi-whatsapp text-success me-2"></i>Link Grup WhatsApp
+                                <span class="text-muted small">(Opsional)</span>
+                            </label>
+                            <input type="url" 
+                                   name="whatsapp_group_link" 
+                                   id="whatsapp_group_link"
+                                   class="form-control form-control-lg @error('whatsapp_group_link') is-invalid @enderror" 
+                                   placeholder="https://chat.whatsapp.com/..."
+                                   value="{{ old('whatsapp_group_link') }}">
+                            <div class="form-text">
+                                Link grup WhatsApp untuk peserta event. Peserta dapat bergabung untuk mendapatkan informasi terkini.
+                            </div>
+                            @error('whatsapp_group_link')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- SEO Fields -->
+                        <hr class="my-4">
+                        <h5 class="fw-bold text-primary mb-3"><i class="bi bi-search me-2"></i>Google SEO</h5>
+                        <div class="form-group mb-3">
+                            <label for="seo_title" class="form-label fw-semibold">SEO Title</label>
+                            <input type="text" name="seo_title" id="seo_title" class="form-control form-control-lg" placeholder="Judul SEO (opsional)" value="{{ old('seo_title') }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="seo_description" class="form-label fw-semibold">Meta Description</label>
+                            <textarea name="seo_description" id="seo_description" class="form-control" rows="3" placeholder="Deskripsi singkat untuk meta description (opsional)">{{ old('seo_description') }}</textarea>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="seo_jsonld" class="form-label fw-semibold">JSON-LD (Structured Data)</label>
+                            <textarea name="seo_jsonld" id="seo_jsonld" class="form-control" rows="5" placeholder='Tempelkan JSON-LD valid, mis: {"&#64;context":"https://schema.org", ...} (opsional)'>{{ old('seo_jsonld') }}</textarea>
+                            <div class="form-text">Jika diisi, script JSON-LD akan ditampilkan di halaman publik.</div>
                         </div>
 
                         <!-- Form Actions -->
@@ -309,9 +506,89 @@
 </style>
 
 <script>
+// Toggle fields based on event type
+function toggleEventTypeFields() {
+    const eventType = document.querySelector('input[name="event_type"]:checked')?.value;
+    const priceField = document.getElementById('priceField');
+    const qrisField = document.getElementById('qrisField');
+    const certificateSettings = document.getElementById('certificateSettings');
+    
+    if (eventType === 'paid') {
+        // Paid event: show price, QRIS, certificate, WhatsApp
+        priceField.style.display = 'block';
+        qrisField.style.display = 'block';
+        if (certificateField) certificateField.style.display = 'block';
+        if (certificateSettings) certificateSettings.style.display = 'block';
+        if (whatsappField) whatsappField.style.display = 'block';
+        if (googleFormField) {
+            googleFormField.style.display = 'block';
+            const googleFormInput = document.getElementById('google_form_link');
+            if (googleFormInput) googleFormInput.removeAttribute('required');
+        }
+        // Make price required
+        document.getElementById('price').setAttribute('required', 'required');
+    } else if (eventType === 'public') {
+        // Public event: hide price, QRIS, certificate, WhatsApp; show and require Google Form
+        priceField.style.display = 'none';
+        qrisField.style.display = 'none';
+        if (certificateField) certificateField.style.display = 'none';
+        if (certificateSettings) certificateSettings.style.display = 'none';
+        if (whatsappField) whatsappField.style.display = 'none';
+        if (googleFormField) {
+            googleFormField.style.display = 'block';
+            const googleFormInput = document.getElementById('google_form_link');
+            if (googleFormInput) googleFormInput.setAttribute('required', 'required');
+        }
+        // Clear and remove required from price
+        document.getElementById('price').value = '';
+        document.getElementById('price').removeAttribute('required');
+        document.getElementById('qris_image_path').value = '';
+    } else {
+        // Free event: hide price and QRIS, show certificate and Google Form (optional)
+        priceField.style.display = 'none';
+        qrisField.style.display = 'none';
+        if (certificateField) certificateField.style.display = 'block';
+        if (certificateSettings) certificateSettings.style.display = 'block';
+        if (whatsappField) whatsappField.style.display = 'none';
+        if (googleFormField) {
+            googleFormField.style.display = 'block';
+            const googleFormInput = document.getElementById('google_form_link');
+            if (googleFormInput) googleFormInput.removeAttribute('required');
+        }
+        // Clear values and remove required
+        document.getElementById('price').value = '';
+        document.getElementById('price').removeAttribute('required');
+        document.getElementById('qris_image_path').value = '';
+    }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    toggleEventTypeFields();
+});
+
 function previewImage(input) {
     const preview = document.getElementById('imagePreview');
     const previewImg = document.getElementById('previewImg');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.style.display = 'none';
+    }
+}
+
+// Preview QRIS image
+function previewQrisImage(input) {
+    const preview = document.getElementById('qrisImagePreview');
+    const previewImg = document.getElementById('previewQrisImg');
     
     if (input.files && input.files[0]) {
         const reader = new FileReader();

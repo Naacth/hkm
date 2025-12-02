@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Admin;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class AdminSeeder extends Seeder
@@ -14,22 +13,25 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        Admin::create([
-            'username' => 'fariz',
-            'password' => Hash::make('fariz ganteng'),
-            'name' => 'Fariz Admin',
-            'email' => 'fariz@himakom.com',
-            'role' => 'admin',
-            'is_active' => true,
-        ]);
+        $admins = [
+            [
+                'username' => 'fariz',
+                'email' => 'fariz@himakom.com',
+                'password' => Hash::make('fariz123'),
+                'name' => 'Fariz Sandinga',
+                'role' => 'superadmin',
+            ],
+            [
+                'username' => 'admin',
+                'email' => 'admin@himakom.com',
+                'password' => Hash::make('admin123'),
+                'name' => 'Admin HIMAKOM',
+                'role' => 'admin',
+            ],
+        ];
 
-        Admin::create([
-            'username' => 'superadmin',
-            'password' => Hash::make('superadmin123'),
-            'name' => 'Super Admin',
-            'email' => 'superadmin@himakom.com',
-            'role' => 'superadmin',
-            'is_active' => true,
-        ]);
+        foreach ($admins as $admin) {
+            Admin::create($admin);
+        }
     }
 }

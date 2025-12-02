@@ -33,9 +33,12 @@ class GaleriController extends Controller
             'title' => 'required',
             'description' => 'nullable',
             'image' => 'required|image',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string',
+            'seo_jsonld' => 'nullable|string',
         ]);
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('galeris', 'public');
+            $validated['image'] = $request->file('image')->store('galeris', 'public_direct');
         }
         Galeri::create($validated);
         return redirect()->route('galeris.index')->with('success', 'Galeri berhasil ditambahkan!');
@@ -66,9 +69,12 @@ class GaleriController extends Controller
             'title' => 'required',
             'description' => 'nullable',
             'image' => 'nullable|image',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string',
+            'seo_jsonld' => 'nullable|string',
         ]);
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('galeris', 'public');
+            $validated['image'] = $request->file('image')->store('galeris', 'public_direct');
         }
         $galeri->update($validated);
         return redirect()->route('galeris.index')->with('success', 'Galeri berhasil diupdate!');

@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Tambah Kontak | Admin')
+@section('page-title', 'Tambah Kontak')
 @section('content')
 <div class="container py-4">
     <h2 class="fw-bold mb-3">Tambah Kontak</h2>

@@ -37,13 +37,13 @@ class DivisiController extends Controller
             'group_photo' => 'nullable|image',
         ]);
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('divisis', 'public');
+            $validated['photo'] = $request->file('photo')->store('divisis', 'public_direct');
         }
         if ($request->hasFile('logo')) {
-            $validated['logo'] = $request->file('logo')->store('divisis', 'public');
+            $validated['logo'] = $request->file('logo')->store('divisis', 'public_direct');
         }
         if ($request->hasFile('group_photo')) {
-            $validated['group_photo'] = $request->file('group_photo')->store('divisis', 'public');
+            $validated['group_photo'] = $request->file('group_photo')->store('divisis', 'public_direct');
         }
         Divisi::create($validated);
         return redirect()->route('divisis.index')->with('success', 'Divisi berhasil ditambahkan!');
@@ -78,13 +78,13 @@ class DivisiController extends Controller
             'group_photo' => 'nullable|image',
         ]);
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('divisis', 'public');
+            $validated['photo'] = $request->file('photo')->store('divisis', 'public_direct');
         }
         if ($request->hasFile('logo')) {
-            $validated['logo'] = $request->file('logo')->store('divisis', 'public');
+            $validated['logo'] = $request->file('logo')->store('divisis', 'public_direct');
         }
         if ($request->hasFile('group_photo')) {
-            $validated['group_photo'] = $request->file('group_photo')->store('divisis', 'public');
+            $validated['group_photo'] = $request->file('group_photo')->store('divisis', 'public_direct');
         }
         $divisi->update($validated);
         return redirect()->route('divisis.index')->with('success', 'Divisi berhasil diupdate!');

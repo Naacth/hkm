@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Kelola Produk | Admin')
+@section('page-title', 'Kelola Produk')
 @section('content')
 
 <div class="admin-header bg-primary text-white py-4">
@@ -112,7 +113,7 @@
                                 </td>
                                 <td class="align-middle">
                                     @if($produk->image)
-                                        <img src="{{ asset('storage/'.$produk->image) }}" 
+                                        <img src="{{ asset('uploads/'.$produk->image) }}" 
                                              width="60" 
                                              height="60"
                                              class="rounded-3 shadow-sm"

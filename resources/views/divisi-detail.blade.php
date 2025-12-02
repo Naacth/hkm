@@ -10,7 +10,7 @@
                 <div class="hero-content animate__animated animate__fadeInLeft">
                     <div class="divisi-logo mb-4">
                         @if($divisi->logo)
-                            <img src="{{ asset('storage/'.$divisi->logo) }}" 
+                            <img src="{{ asset('uploads/'.$divisi->logo) }}" 
                                  class="logo-image shadow-lg" 
                                  style="max-width: 120px; max-height: 120px; object-fit: contain; background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 1rem;">
                         @else
@@ -57,7 +57,7 @@
             <div class="col-lg-6 text-center animate__animated animate__fadeInRight">
                 @if($divisi->group_photo)
                     <div class="group-photo-container">
-                        <img src="{{ asset('storage/'.$divisi->group_photo) }}" 
+                        <img src="{{ asset('uploads/'.$divisi->group_photo) }}" 
                              class="group-photo shadow-2xl" 
                              style="max-width: 500px; max-height: 400px; object-fit: cover; border-radius: 1.5rem; border: 4px solid rgba(255,255,255,0.3);">
                     </div>
@@ -102,13 +102,13 @@
                     <div class="member-photo-section position-relative" style="height: 200px; background: linear-gradient(135deg, #1976d2 0%, #3F3F9C 100%);">
                         <div class="position-absolute top-50 start-50 translate-middle">
                             @if($member->photo)
-                                <img src="{{ asset('storage/'.$member->photo) }}" 
+                                <img src="{{ asset('uploads/'.$member->photo) }}" 
                                      alt="Foto {{ $member->name }}" 
-                                     class="member-photo rounded-circle border-4 border-white shadow-lg"
-                                     style="width: 140px; height: 140px; object-fit: cover;">
+                                     class="member-photo border-4 border-white shadow-lg"
+                                     style="width: 140px; height: 140px; object-fit: cover; border-radius: 0;">
                             @else
-                                <div class="member-photo-placeholder rounded-circle border-4 border-white shadow-lg d-flex align-items-center justify-content-center bg-white"
-                                     style="width: 140px; height: 140px;">
+                                <div class="member-photo-placeholder border-4 border-white shadow-lg d-flex align-items-center justify-content-center bg-white"
+                                     style="width: 140px; height: 140px; border-radius: 0;">
                                     <span class="text-primary fw-bold" style="font-size: 3rem;">{{ strtoupper(substr($member->name, 0, 1)) }}</span>
                                 </div>
                             @endif
@@ -313,16 +313,35 @@
     box-shadow: 0 20px 40px rgba(25, 118, 210, 0.15) !important;
 }
 
+.member-photo-section {
+    overflow: hidden;
+}
+
 .member-photo {
-    transition: transform 0.3s ease;
+    transition: all 0.35s ease;
+    border-radius: 0 !important;
+}
+
+/* On hover: expand photo to full size and remove round shape */
+.member-card:hover .member-photo-section > .position-absolute {
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .member-card:hover .member-photo {
-    transform: scale(1.1);
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
 }
 
 .member-photo-placeholder {
     background: rgba(255, 255, 255, 0.9);
+    border-radius: 0 !important;
 }
 
 /* Member Details */

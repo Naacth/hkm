@@ -42,7 +42,7 @@
             <div class="col-lg-6 text-center animate__animated animate__fadeInRight">
                 <div class="hero-image-container">
                     @if(!empty($about?->image))
-                        <img src="{{ asset('storage/'.$about->image) }}" 
+                        <img src="{{ asset('uploads/'.$about->image) }}" 
                              class="hero-image rounded-4 shadow-2xl" 
                              style="max-width: 100%; height: auto; border: 4px solid rgba(255,255,255,0.3);">
                     @else

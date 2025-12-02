@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Edit Galeri | Admin')
+@section('page-title', 'Edit Galeri')
 @section('content')
 <div class="container py-4">
     <h2 class="fw-bold mb-3">Edit Galeri</h2>
@@ -15,12 +16,27 @@
             <label class="form-label">Gambar</label>
             <input type="file" name="image" class="form-control">
             @if($galeri->image)
-                <img src="{{ asset('storage/'.$galeri->image) }}" width="100" class="mt-2 rounded shadow">
+                <img src="{{ asset('uploads/'.$galeri->image) }}" width="100" class="mt-2 rounded shadow">
             @endif
         </div>
         <div class="mb-3">
             <label class="form-label">Deskripsi</label>
             <textarea name="description" class="form-control" rows="3">{{ $galeri->description }}</textarea>
+        </div>
+        <hr class="my-4">
+        <h5 class="fw-bold text-primary mb-3"><i class="bi bi-search me-2"></i>Google SEO</h5>
+        <div class="mb-3">
+            <label class="form-label">SEO Title</label>
+            <input type="text" name="seo_title" class="form-control" value="{{ old('seo_title', $galeri->seo_title) }}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Meta Description</label>
+            <textarea name="seo_description" class="form-control" rows="3">{{ old('seo_description', $galeri->seo_description) }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">JSON-LD (Structured Data)</label>
+            <textarea name="seo_jsonld" class="form-control" rows="5" placeholder='{"&#64;context":"https://schema.org", ...}'>{{ old('seo_jsonld', $galeri->seo_jsonld) }}</textarea>
+            <div class="form-text">Jika diisi, script JSON-LD akan ditampilkan di halaman publik.</div>
         </div>
         <button class="btn btn-primary">Update</button>
         <a href="{{ route('galeris.index') }}" class="btn btn-secondary">Batal</a>

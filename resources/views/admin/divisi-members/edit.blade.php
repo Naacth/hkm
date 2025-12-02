@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Edit Anggota Divisi | Admin')
+@section('page-title', 'Edit Anggota Divisi')
 @section('content')
 
 <div class="admin-header bg-primary text-white py-4">
@@ -90,7 +91,7 @@
                                     <h6 class="fw-semibold text-primary mb-2">
                                         <i class="bi bi-image me-2"></i>Foto Saat Ini
                                     </h6>
-                                    <img src="{{ asset('storage/'.$divisiMember->photo) }}" 
+                                    <img src="{{ asset('uploads/'.$divisiMember->photo) }}" 
                                          alt="Foto Anggota" 
                                          style="width:100px;height:100px;object-fit:cover;" 
                                          class="rounded-circle border shadow-sm">

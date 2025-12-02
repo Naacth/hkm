@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Kelola Event | Admin')
+@section('page-title', 'Kelola Event')
 @section('content')
 
 <!-- Admin Header -->
@@ -105,7 +106,7 @@
                             <td class="px-4 py-3">
                                 @if($event->image)
                                     <div class="event-image-container">
-                                        <img src="{{ asset('storage/'.$event->image) }}" 
+                                        <img src="{{ asset('uploads/'.$event->image) }}" 
                                              class="event-thumbnail rounded-3 shadow-sm" 
                                              alt="{{ $event->title }}"
                                              data-bs-toggle="modal" 
@@ -122,7 +123,7 @@
                                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body p-0">
-                                                    <img src="{{ asset('storage/'.$event->image) }}" 
+                                                    <img src="{{ asset('uploads/'.$event->image) }}" 
                                                          class="img-fluid w-100" 
                                                          alt="{{ $event->title }}">
                                                 </div>
@@ -137,6 +138,11 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="action-buttons">
+                                    <a href="{{ route('admin.events.participants', $event) }}" 
+                                       class="btn btn-primary btn-sm rounded-pill me-2"
+                                       title="Kelola Peserta">
+                                        <i class="bi bi-people"></i>
+                                    </a>
                                     <a href="{{ route('events.edit', $event) }}" 
                                        class="btn btn-warning btn-sm rounded-pill me-2"
                                        title="Edit Event">

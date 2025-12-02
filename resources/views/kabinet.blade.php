@@ -197,7 +197,7 @@
                     <!-- Profile Image -->
                     <div class="profile-image-container position-relative">
                         @if($kabinet->photo)
-                            <img src="{{ asset('storage/'.$kabinet->photo) }}" 
+                            <img src="{{ asset('uploads/'.$kabinet->photo) }}" 
                                  class="profile-image w-100" 
                                  style="height: 300px; object-fit: cover;" 
                                  alt="{{ $kabinet->name }}">

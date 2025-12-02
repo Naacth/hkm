@@ -1,5 +1,16 @@
 @extends('layout')
 @section('title', 'Galeri | HIMAKOM UYM')
+@section('meta_description', 'Galeri foto kegiatan HIMAKOM UYM: dokumentasi event, workshop, dan aktivitas lainnya.')
+@section('jsonld')
+{
+  "&#64;context": "https://schema.org",
+  "@type": "ImageGallery",
+  "name": "Galeri HIMAKOM UYM",
+  "image": [
+    @foreach($galeris as $g)"{{ asset('uploads/'.$g->image) }}"@if(!$loop->last),@endif @endforeach
+  ]
+}
+@endsection
 @section('content')
 
 <!-- Hero Section -->
@@ -62,11 +73,12 @@
         @if($galeris->count() > 0)
         <div class="row g-4">
             <div class="col-lg-8">
-                <div class="featured-image-container rounded-4 overflow-hidden shadow-lg">
-                    <img src="{{ asset('storage/'.$galeris->first()->image) }}" 
+                <div class="featured-image-container rounded-4 overflow-hidden shadow-lg position-relative">
+                    <img src="{{ asset('uploads/'.$galeris->first()->image) }}" 
                          class="featured-image w-100" 
                          style="height: 400px; object-fit: cover;" 
-                         alt="{{ $galeris->first()->title }}">
+                         alt="{{ $galeris->first()->title }}"
+                         onerror="this.src='https://via.placeholder.com/800x400/1976d2/ffffff?text=Galeri+HIMAKOM'">
                     <div class="featured-overlay p-4">
                         <h4 class="text-white fw-bold mb-2">{{ $galeris->first()->title }}</h4>
                         <p class="text-white mb-0" style="opacity: 0.9;">{{ $galeris->first()->description }}</p>
@@ -77,11 +89,15 @@
                 <div class="row g-3">
                     @foreach($galeris->skip(1)->take(4) as $index => $galeri)
                     <div class="col-6">
-                        <div class="small-gallery-item rounded-3 overflow-hidden shadow-sm">
-                            <img src="{{ asset('storage/'.$galeri->image) }}" 
+                        <div class="small-gallery-item rounded-3 overflow-hidden shadow-sm position-relative">
+                            <img src="{{ asset('uploads/'.$galeri->image) }}" 
                                  class="w-100" 
                                  style="height: 120px; object-fit: cover;" 
-                                 alt="{{ $galeri->title }}">
+                                 alt="{{ $galeri->title }}"
+                                 onerror="this.src='https://via.placeholder.com/300x120/1976d2/ffffff?text=Galeri'">
+                            <div class="small-overlay">
+                                <i class="bi bi-zoom-in text-white"></i>
+                            </div>
                         </div>
                     </div>
                     @endforeach
@@ -119,16 +135,17 @@
             <div class="gallery-item animate__animated animate__fadeInUp" style="animation-delay: {{ $index * 0.1 }}s;">
                 <div class="gallery-card rounded-4 overflow-hidden shadow-sm transition-all">
                     <div class="gallery-image-container position-relative">
-                        <img src="{{ asset('storage/'.$galeri->image) }}" 
+                        <img src="{{ asset('uploads/'.$galeri->image) }}" 
                              class="gallery-image w-100" 
                              style="height: 250px; object-fit: cover;" 
-                             alt="{{ $galeri->title }}">
+                             alt="{{ $galeri->title }}"
+                             onerror="this.src='https://via.placeholder.com/400x250/1976d2/ffffff?text=Galeri+HIMAKOM'">
                         <div class="gallery-overlay">
                             <div class="overlay-content text-center">
                                 <h5 class="text-white fw-bold mb-2">{{ $galeri->title }}</h5>
                                 <p class="text-white small mb-3" style="opacity: 0.9;">{{ Str::limit($galeri->description, 80) }}</p>
                                 <button class="btn btn-light btn-sm rounded-pill" 
-                                        onclick="showGalleryDetails('{{ $galeri->title }}', '{{ $galeri->description }}', '{{ asset('storage/'.$galeri->image) }}')">
+                                        onclick="showGalleryDetails('{{ $galeri->title }}', '{{ $galeri->description }}', '{{ asset('uploads/'.$galeri->image) }}')">
                                     <i class="bi bi-eye me-1"></i>Lihat Detail
                                 </button>
                             </div>
@@ -310,6 +327,24 @@
 
 .small-gallery-item:hover {
     transform: scale(1.05);
+}
+
+.small-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.small-gallery-item:hover .small-overlay {
+    opacity: 1;
 }
 
 /* Gallery Masonry */

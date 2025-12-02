@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Tambah Anggota Divisi | Admin')
+@section('page-title', 'Tambah Anggota Divisi')
 @section('content')
 
 <div class="admin-header bg-primary text-white py-4">

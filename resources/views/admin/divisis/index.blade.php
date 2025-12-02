@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Kelola Divisi | Admin')
+@section('page-title', 'Kelola Divisi')
 @section('content')
 
 <!-- Admin Header -->
@@ -91,7 +92,7 @@
                             <td class="px-4 py-3">
                                 @if($divisi->photo)
                                     <div class="divisi-image-container">
-                                        <img src="{{ asset('storage/'.$divisi->photo) }}" 
+                                        <img src="{{ asset('uploads/'.$divisi->photo) }}" 
                                              class="divisi-thumbnail rounded-3 shadow-sm" 
                                              alt="{{ $divisi->name }}"
                                              data-bs-toggle="modal" 
@@ -108,7 +109,7 @@
                                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body p-0">
-                                                    <img src="{{ asset('storage/'.$divisi->photo) }}" 
+                                                    <img src="{{ asset('uploads/'.$divisi->photo) }}" 
                                                          class="img-fluid w-100" 
                                                          alt="{{ $divisi->name }}">
                                                 </div>
@@ -236,7 +237,7 @@
                 <div class="divisi-overview-card bg-white rounded-4 p-4 shadow-lg">
                     <div class="d-flex align-items-center mb-3">
                         @if($divisi->logo)
-                            <img src="{{ asset('storage/'.$divisi->logo) }}" 
+                            <img src="{{ asset('uploads/'.$divisi->logo) }}" 
                                  class="divisi-logo me-3" 
                                  alt="{{ $divisi->name }}"
                                  style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">

@@ -1,5 +1,25 @@
 @extends('layout')
 @section('title', 'Produk Kami | HIMAKOM UYM')
+@section('meta_description', 'Produk dan layanan teknologi dari HIMAKOM UYM: pengembangan software, pelatihan, konsultasi.')
+@section('jsonld')
+{
+  "&#64;context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Produk HIMAKOM UYM",
+  "itemListElement": [
+    @foreach($produks as $i => $p)
+    {
+      "&#64;type": "Product",
+      "name": "{{ addslashes($p->name) }}",
+      @if($p->image)"image": "{{ asset('uploads/'.$p->image) }}",@endif
+      "description": "{{ addslashes(Str::limit($p->description, 160)) }}",
+      @if(!empty($p->price))"offers": {"&#64;type":"Offer","price":"{{ $p->price }}","priceCurrency":"IDR"},@endif
+      "position": {{ $i + 1 }}
+    }@if(!$loop->last),@endif
+    @endforeach
+  ]
+}
+@endsection
 @section('content')
 
 <!-- Hero Section -->
@@ -69,10 +89,11 @@
                     <!-- Product Image -->
                     <div class="product-image-container position-relative">
             @if($produk->image)
-                            <img src="{{ asset('storage/'.$produk->image) }}" 
+                            <img src="{{ asset('uploads/'.$produk->image) }}" 
                                  class="product-image w-100" 
                                  style="height: 250px; object-fit: cover;" 
-                                 alt="{{ $produk->name }}">
+                                 alt="{{ $produk->name }}"
+                                 onerror="this.src='https://via.placeholder.com/400x250/1976d2/ffffff?text=Produk+HIMAKOM'">
                         @else
                             <div class="product-image-placeholder w-100 d-flex align-items-center justify-content-center bg-primary"
                                  style="height: 250px;">
@@ -126,20 +147,40 @@
                         
                         <!-- Product Actions -->
                         <div class="product-actions">
-                            @if($produk->whatsapp_link)
-                                <a href="{{ $produk->whatsapp_link }}" target="_blank" class="btn btn-success btn-lg w-100 rounded-pill mb-2">
-                                    <i class="bi bi-whatsapp me-2"></i>Pesan via WhatsApp
+                            @auth
+                                <a href="{{ route('orders.create', $produk) }}" class="btn btn-primary btn-lg w-100 rounded-pill mb-2">
+                                    <i class="bi bi-cart-plus me-2"></i>Order Sekarang
                                 </a>
+                                @if($produk->whatsapp_link)
+                                    <a href="{{ $produk->whatsapp_link }}" target="_blank" class="btn btn-outline-success btn-lg w-100 rounded-pill mb-2">
+                                        <i class="bi bi-whatsapp me-2"></i>Konsultasi WhatsApp
+                                    </a>
+                                @endif
                             @else
-                                @auth
-                                    <a href="{{ route('orders.create', $produk) }}" class="btn btn-success btn-lg w-100 rounded-pill">
-                                        <i class="bi bi-cart-plus me-2"></i>Beli Sekarang
+                                <a href="{{ route('login') }}" class="btn btn-warning btn-lg w-100 rounded-pill mb-2">
+                                    <i class="bi bi-lock me-2"></i>Login untuk Order
+                                </a>
+                                @if($produk->whatsapp_link)
+                                    <a href="{{ $produk->whatsapp_link }}" target="_blank" class="btn btn-outline-success btn-lg w-100 rounded-pill mb-2">
+                                        <i class="bi bi-whatsapp me-2"></i>Konsultasi WhatsApp
                                     </a>
-                                @else
-                                    <a href="{{ route('login') }}" class="btn btn-warning btn-lg w-100 rounded-pill">
-                                        <i class="bi bi-lock me-2"></i>Login untuk Membeli
-                                    </a>
-                                @endauth
+                                @endif
+                            @endauth
+                            
+                            <!-- QRIS Payment -->
+                            @if($produk->qris_image)
+                                <div class="qris-section mt-3 p-3 bg-light rounded-3">
+                                    <h6 class="fw-semibold text-success mb-2">
+                                        <i class="bi bi-qr-code me-2"></i>Pembayaran QRIS
+                                    </h6>
+                                    <div class="text-center">
+                                        <img src="{{ asset('uploads/'.$produk->qris_image) }}" 
+                                             class="img-fluid rounded-3 shadow-sm" 
+                                             style="max-height: 150px;" 
+                                             alt="QRIS Pembayaran">
+                                        <p class="text-muted small mt-2 mb-0">Scan QRIS untuk pembayaran</p>
+                                    </div>
+                                </div>
                             @endif
                         </div>
                     </div>

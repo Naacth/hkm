@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Tambah Divisi | Admin')
+@section('page-title', 'Tambah Divisi')
 @section('content')
 
 <!-- Admin Header -->

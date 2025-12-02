@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Edit Produk | Admin')
+@section('page-title', 'Edit Produk')
 @section('content')
 
 <div class="admin-header bg-primary text-white py-4">
@@ -64,7 +65,7 @@
                                     <h6 class="fw-semibold text-primary mb-2">
                                         <i class="bi bi-image me-2"></i>Gambar Saat Ini
                                     </h6>
-                                    <img src="{{ asset('storage/'.$produk->image) }}" 
+                                    <img src="{{ asset('uploads/'.$produk->image) }}" 
                                          class="img-fluid rounded-3 shadow-sm" 
                                          style="max-height: 200px;"
                                          alt="{{ $produk->name }}">
@@ -97,6 +98,48 @@
                                    class="form-control form-control-lg" 
                                    placeholder="Masukkan link WhatsApp untuk pemesanan produk"
                                    value="{{ $produk->whatsapp_link }}">
+                        </div>
+
+                        <!-- QRIS Image -->
+                        <div class="form-group mb-4">
+                            <label for="qris_image_path" class="form-label fw-semibold">
+                                <i class="bi bi-qr-code text-success me-2"></i>Gambar QRIS
+                                <span class="text-muted small">(Opsional)</span>
+                            </label>
+                            <div class="qris-upload-container">
+                                <input type="file" 
+                                       name="qris_image_path" 
+                                       id="qris_image_path"
+                                       class="form-control form-control-lg" 
+                                       accept="image/*"
+                                       onchange="previewQrisImage(this)">
+                                
+                                <!-- Current QRIS Preview -->
+                                @if($produk->qris_image_path)
+                                <div class="current-qris-preview mt-3" id="currentQrisPreview">
+                                    <h6 class="fw-semibold text-success mb-2">
+                                        <i class="bi bi-qr-code me-2"></i>QRIS Saat Ini
+                                    </h6>
+                                    <div class="current-qris-container">
+                                        <img src="{{ asset('uploads/'.$produk->qris_image_path) }}" 
+                                             class="img-fluid rounded-3 shadow-sm" 
+                                             style="max-height: 200px;"
+                                             alt="QRIS Saat Ini">
+                                    </div>
+                                </div>
+                                @endif
+                                
+                                <!-- New QRIS Preview -->
+                                <div class="qris-preview mt-3" id="qrisPreview" style="{{ $produk->qris_image_path ? 'display: none;' : 'display: block;' }}">
+                                    <h6 class="fw-semibold text-success mb-2">
+                                        <i class="bi bi-eye me-2"></i>Preview QRIS Baru
+                                    </h6>
+                                    <img id="previewQrisImg" class="img-fluid rounded-3 shadow-sm" style="max-height: 200px;">
+                                </div>
+                            </div>
+                            <div class="form-text">
+                                Upload gambar QRIS untuk pembayaran produk. Format yang didukung: JPG, PNG
+                            </div>
                         </div>
 
                         <div class="form-group mb-4">
@@ -158,6 +201,23 @@
                                       placeholder="Tambahkan fitur-fitur khusus produk ini...">{{ $produk->features }}</textarea>
                         </div>
 
+                        <!-- SEO Fields -->
+                        <hr class="my-4">
+                        <h5 class="fw-bold text-primary mb-3"><i class="bi bi-search me-2"></i>Google SEO</h5>
+                        <div class="form-group mb-3">
+                            <label for="seo_title" class="form-label fw-semibold">SEO Title</label>
+                            <input type="text" name="seo_title" id="seo_title" class="form-control form-control-lg" placeholder="Judul SEO (opsional)" value="{{ old('seo_title', $produk->seo_title) }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="seo_description" class="form-label fw-semibold">Meta Description</label>
+                            <textarea name="seo_description" id="seo_description" class="form-control" rows="3" placeholder="Deskripsi singkat untuk meta description (opsional)">{{ old('seo_description', $produk->seo_description) }}</textarea>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="seo_jsonld" class="form-label fw-semibold">JSON-LD (Structured Data)</label>
+                            <textarea name="seo_jsonld" id="seo_jsonld" class="form-control" rows="5" placeholder='Tempelkan JSON-LD valid, mis: {"&#64;context":"https://schema.org", ...} (opsional)'>{{ old('seo_jsonld', $produk->seo_jsonld) }}</textarea>
+                            <div class="form-text">Jika diisi, script JSON-LD akan ditampilkan di halaman publik.</div>
+                        </div>
+
                         <div class="form-actions text-center">
                             <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 me-3">
                                 <i class="bi bi-check-circle me-2"></i>Update Produk
@@ -167,6 +227,46 @@
                             </a>
                         </div>
                     </form>
+                    <hr class="my-5">
+                    <h5 class="fw-bold text-primary mb-3"><i class="bi bi-ticket-perforated me-2"></i>Voucher Diskon</h5>
+                    <form action="{{ route('admin.produks.vouchers.store', $produk->id) }}" method="POST" class="row g-3 mb-3">
+                        @csrf
+                        <div class="col-md-6">
+                            <label class="form-label">Kode</label>
+                            <input type="text" name="code" class="form-control" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Diskon</label>
+                            <select name="discount_percent" class="form-select" required>
+                                <option value="10">10%</option>
+                                <option value="20">20%</option>
+                                <option value="30">30%</option>
+                                <option value="50">50%</option>
+                                <option value="80">80%</option>
+                                <option value="100">100%</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button class="btn btn-primary w-100">Tambah</button>
+                        </div>
+                    </form>
+                    @php($vouchersTableExists = \Illuminate\Support\Facades\Schema::hasTable('vouchers'))
+                    @if(!$vouchersTableExists)
+                        <div class="alert alert-warning">Jalankan migrasi untuk mengaktifkan voucher: <code>php artisan migrate</code></div>
+                    @else
+                        <ul class="list-group">
+                            @foreach(\App\Models\Voucher::where('applicable_type','produk')->where('applicable_id',$produk->id)->get() as $voucher)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>{{ $voucher->code }} — {{ $voucher->discount_percent }}%</span>
+                                <form action="{{ route('admin.vouchers.destroy', $voucher->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-sm btn-danger">Hapus</button>
+                                </form>
+                            </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </div>
             </div>
         </div>
@@ -257,5 +357,32 @@
     }
 }
 </style>
+
+<script>
+function previewQrisImage(input) {
+    const preview = document.getElementById('qrisPreview');
+    const previewImg = document.getElementById('previewQrisImg');
+    const currentQrisPreview = document.getElementById('currentQrisPreview');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+            if (currentQrisPreview) {
+                currentQrisPreview.style.display = 'none';
+            }
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.style.display = 'none';
+        if (currentQrisPreview) {
+            currentQrisPreview.style.display = 'block';
+        }
+    }
+}
+</script>
 
 @endsection

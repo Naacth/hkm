@@ -15,18 +15,26 @@ class EventRegistration extends Model
         'registration_number',
         'status',
         'participant_name',
+        'participant_email',
         'participant_phone',
         'participant_nim',
         'participant_kelas',
-        'participant_email',
         'notes',
         'payment_status',
         'payment_method',
+        'proof_of_payment_image_path',
         'certificate_downloaded',
+        'certificate_path',
+        'voucher_code',
+        'voucher_discount_percent',
+        'discount_amount',
+        'final_price',
     ];
 
     protected $casts = [
         'certificate_downloaded' => 'boolean',
+        'discount_amount' => 'decimal:2',
+        'final_price' => 'decimal:2',
     ];
 
     /**
@@ -72,6 +80,7 @@ class EventRegistration extends Model
         return match($this->status) {
             'registered' => 'bg-info',
             'confirmed' => 'bg-success',
+            'paid' => 'bg-warning',
             'attended' => 'bg-primary',
             'cancelled' => 'bg-danger',
             default => 'bg-secondary',
@@ -86,6 +95,7 @@ class EventRegistration extends Model
         return match($this->status) {
             'registered' => 'Terdaftar',
             'confirmed' => 'Dikonfirmasi',
+            'paid' => 'Sudah Bayar',
             'attended' => 'Hadir',
             'cancelled' => 'Dibatalkan',
             default => 'Unknown',
@@ -123,7 +133,13 @@ class EventRegistration extends Model
      */
     public function canDownloadCertificate()
     {
-        return $this->status === 'attended' && $this->event->certificate_template;
+        // Allow download if status is 'attended' or 'paid'
+        if (!in_array($this->status, ['attended', 'paid'])) {
+            return false;
+        }
+
+        // Check if manual certificate exists or template exists
+        return $this->certificate_path || $this->event->certificate_template;
     }
 
     /**
@@ -132,5 +148,75 @@ class EventRegistration extends Model
     public function markCertificateAsDownloaded()
     {
         $this->update(['certificate_downloaded' => true]);
+    }
+
+    /**
+     * Check if registration is paid (confirmed and payment is paid)
+     */
+    public function isPaid()
+    {
+        return $this->status === 'confirmed' && $this->payment_status === 'paid';
+    }
+
+    /**
+     * Check if can access WhatsApp group (only for paid participants)
+     */
+    public function canAccessWhatsAppGroup()
+    {
+        // For free events, all participants can access
+        if ($this->event->isFree()) {
+            return true;
+        }
+        
+        // For paid events, only paid participants can access
+        return $this->isPaid();
+    }
+
+    /**
+     * Get effective status considering payment status
+     */
+    public function getEffectiveStatus()
+    {
+        // If status is explicitly set to 'paid', return 'paid'
+        if ($this->status === 'paid') {
+            return 'paid';
+        }
+        
+        // If status is 'confirmed' and payment is 'paid', return 'paid'
+        if ($this->isPaid()) {
+            return 'paid';
+        }
+        
+        return $this->status;
+    }
+
+    /**
+     * Get effective status label
+     */
+    public function getEffectiveStatusLabel()
+    {
+        return match($this->getEffectiveStatus()) {
+            'registered' => 'Terdaftar',
+            'confirmed' => 'Dikonfirmasi',
+            'paid' => 'Sudah Bayar',
+            'attended' => 'Hadir',
+            'cancelled' => 'Dibatalkan',
+            default => 'Unknown',
+        };
+    }
+
+    /**
+     * Get effective status badge class
+     */
+    public function getEffectiveStatusBadgeClass()
+    {
+        return match($this->getEffectiveStatus()) {
+            'registered' => 'bg-info',
+            'confirmed' => 'bg-success',
+            'paid' => 'bg-warning',
+            'attended' => 'bg-primary',
+            'cancelled' => 'bg-danger',
+            default => 'bg-secondary',
+        };
     }
 }

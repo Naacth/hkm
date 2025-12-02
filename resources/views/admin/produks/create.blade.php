@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Tambah Produk | Admin')
+@section('page-title', 'Tambah Produk')
 @section('content')
 
 <div class="admin-header bg-primary text-white py-4">
@@ -85,6 +86,31 @@
                                    placeholder="Masukkan link WhatsApp untuk pemesanan produk">
                         </div>
 
+                        <!-- QRIS Image -->
+                        <div class="form-group mb-4">
+                            <label for="qris_image_path" class="form-label fw-semibold">
+                                <i class="bi bi-qr-code text-success me-2"></i>Gambar QRIS
+                                <span class="text-muted small">(Opsional)</span>
+                            </label>
+                            <input type="file" 
+                                   name="qris_image_path" 
+                                   id="qris_image_path"
+                                   class="form-control form-control-lg" 
+                                   accept="image/*"
+                                   onchange="previewQrisImage(this)">
+                            <div class="form-text">
+                                Upload gambar QRIS untuk pembayaran produk. Format yang didukung: JPG, PNG
+                            </div>
+                            
+                            <!-- QRIS Preview -->
+                            <div class="qris-preview mt-3" id="qrisPreview" style="display: none;">
+                                <h6 class="fw-semibold text-success mb-2">
+                                    <i class="bi bi-eye me-2"></i>Preview QRIS
+                                </h6>
+                                <img id="previewQrisImg" class="img-fluid rounded-3 shadow-sm" style="max-height: 200px;">
+                            </div>
+                        </div>
+
                         <div class="form-group mb-4">
                             <label for="description" class="form-label fw-semibold">
                                 <i class="bi bi-text-paragraph text-primary me-2"></i>Deskripsi Produk
@@ -142,6 +168,23 @@
                                       class="form-control" 
                                       rows="3"
                                       placeholder="Tambahkan fitur-fitur khusus produk ini..."></textarea>
+                        </div>
+
+                        <!-- SEO Fields -->
+                        <hr class="my-4">
+                        <h5 class="fw-bold text-primary mb-3"><i class="bi bi-search me-2"></i>Google SEO</h5>
+                        <div class="form-group mb-3">
+                            <label for="seo_title" class="form-label fw-semibold">SEO Title</label>
+                            <input type="text" name="seo_title" id="seo_title" class="form-control form-control-lg" placeholder="Judul SEO (opsional)" value="{{ old('seo_title') }}">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="seo_description" class="form-label fw-semibold">Meta Description</label>
+                            <textarea name="seo_description" id="seo_description" class="form-control" rows="3" placeholder="Deskripsi singkat untuk meta description (opsional)">{{ old('seo_description') }}</textarea>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="seo_jsonld" class="form-label fw-semibold">JSON-LD (Structured Data)</label>
+                            <textarea name="seo_jsonld" id="seo_jsonld" class="form-control" rows="5" placeholder='Tempelkan JSON-LD valid, mis: {"&#64;context":"https://schema.org", ...} (opsional)'>{{ old('seo_jsonld') }}</textarea>
+                            <div class="form-text">Jika diisi, script JSON-LD akan ditampilkan di halaman publik.</div>
                         </div>
 
                         <div class="form-actions text-center">
@@ -243,5 +286,23 @@
     }
 }
 </style>
+
+<script>
+function previewQrisImage(input) {
+    const preview = document.getElementById('qrisPreview');
+    const previewImg = document.getElementById('previewQrisImg');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
 
 @endsection

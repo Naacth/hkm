@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Dashboard Admin | HIMAKOM UYM')
 @section('content')
 
@@ -84,6 +84,166 @@
                         <div class="stat-content">
                             <h3 class="fw-bold text-info mb-1">{{ App\Models\Produk::count() }}</h3>
                             <p class="text-muted mb-0">Total Produk</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Second Row Statistics -->
+        <div class="row g-4 mt-2">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card bg-white rounded-4 p-4 shadow-sm border-start border-4 border-primary">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-cart-check text-primary" style="font-size: 2.5rem;"></i>
+                            </div>
+                        <div class="stat-content">
+                            <h3 class="fw-bold text-primary mb-1">{{ App\Models\Order::count() }}</h3>
+                            <p class="text-muted mb-0">Total Pesanan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card bg-white rounded-4 p-4 shadow-sm border-start border-4 border-warning">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-clock text-warning" style="font-size: 2.5rem;"></i>
+                            </div>
+                        <div class="stat-content">
+                            <h3 class="fw-bold text-warning mb-1">{{ App\Models\Order::where('status', 'pending')->count() }}</h3>
+                            <p class="text-muted mb-0">Pesanan Pending</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card bg-white rounded-4 p-4 shadow-sm border-start border-4 border-success">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-check-circle text-success" style="font-size: 2.5rem;"></i>
+                            </div>
+                        <div class="stat-content">
+                            <h3 class="fw-bold text-success mb-1">{{ App\Models\Order::whereIn('status', ['confirmed', 'processing', 'shipped', 'delivered'])->count() }}</h3>
+                            <p class="text-muted mb-0">Pesanan Dikonfirmasi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card bg-white rounded-4 p-4 shadow-sm border-start border-4 border-info">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-currency-dollar text-info" style="font-size: 2.5rem;"></i>
+                            </div>
+                        <div class="stat-content">
+                            <h3 class="fw-bold text-info mb-1">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</h3>
+                            <p class="text-muted mb-0">Total Pendapatan (Produk + Event)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Third Row Statistics -->
+        <div class="row g-4 mt-2">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card bg-white rounded-4 p-4 shadow-sm border-start border-4 border-success">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-calendar-check text-success" style="font-size: 2.5rem;"></i>
+                            </div>
+                        <div class="stat-content">
+                            <h3 class="fw-bold text-success mb-1">{{ App\Models\EventRegistration::count() }}</h3>
+                            <p class="text-muted mb-0">Total Pendaftaran Event</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card bg-white rounded-4 p-4 shadow-sm border-start border-4 border-info">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-cash-coin text-info" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="fw-bold text-info mb-1">Rp {{ number_format($cancelledRevenue, 0, ',', '.') }}</h3>
+                            <p class="text-muted mb-0">Pendapatan Dibatalkan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card bg-white rounded-4 p-4 shadow-sm border-start border-4 border-warning">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-clock text-warning" style="font-size: 2.5rem;"></i>
+                            </div>
+                        <div class="stat-content">
+                            <h3 class="fw-bold text-warning mb-1">{{ App\Models\EventRegistration::where('status', 'registered')->count() }}</h3>
+                            <p class="text-muted mb-0">Menunggu Konfirmasi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card bg-white rounded-4 p-4 shadow-sm border-start border-4 border-primary">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-person-check text-primary" style="font-size: 2.5rem;"></i>
+                            </div>
+                        <div class="stat-content">
+                            <h3 class="fw-bold text-primary mb-1">{{ App\Models\EventRegistration::where('status', 'attended')->count() }}</h3>
+                            <p class="text-muted mb-0">Peserta Hadir</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card bg-white rounded-4 p-4 shadow-sm border-start border-4 border-info">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-award text-info" style="font-size: 2.5rem;"></i>
+                            </div>
+                        <div class="stat-content">
+                            <h3 class="fw-bold text-info mb-1">{{ App\Models\EventRegistration::where('status', 'attended')->where('certificate_downloaded', true)->count() }}</h3>
+                            <p class="text-muted mb-0">Sertifikat Didownload</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card bg-white rounded-4 p-4 shadow-sm border-start border-4 border-primary">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-bag-check text-primary" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="fw-bold text-primary mb-1">Rp {{ number_format($orderRevenue, 0, ',', '.') }}</h3>
+                            <p class="text-muted mb-0">Pendapatan Produk</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-card bg-white rounded-4 p-4 shadow-sm border-start border-4 border-warning">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon me-3">
+                            <i class="bi bi-ticket-perforated text-warning" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 class="fw-bold text-warning mb-1">Rp {{ number_format($eventRevenue, 0, ',', '.') }}</h3>
+                            <p class="text-muted mb-0">Pendapatan Event</p>
                         </div>
                     </div>
                 </div>
@@ -245,6 +405,60 @@
                 </div>
             </div>
             
+            <!-- Orders Management -->
+            <div class="col-lg-4 col-md-6">
+                <div class="action-card bg-white rounded-4 shadow-lg p-4 h-100 transition-all">
+                    <div class="action-icon mb-4">
+                        <i class="bi bi-cart-check text-primary" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4 class="fw-bold text-primary mb-3">Kelola Pesanan</h4>
+                    <p class="text-muted mb-4">
+                        Kelola semua pesanan dari pelanggan HIMAKOM dan update status pesanan.
+                    </p>
+                    <div class="action-buttons">
+                        <a href="{{ route('admin.orders.index') }}" class="btn btn-primary btn-lg w-100 rounded-pill">
+                            <i class="bi bi-cart-check me-2"></i>Kelola Pesanan
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Event Registrations Management -->
+            <div class="col-lg-4 col-md-6">
+                <div class="action-card bg-white rounded-4 shadow-lg p-4 h-100 transition-all">
+                    <div class="action-icon mb-4">
+                        <i class="bi bi-calendar-check text-success" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4 class="fw-bold text-primary mb-3">Kelola Pendaftaran Event</h4>
+                    <p class="text-muted mb-4">
+                        Kelola pendaftaran event, konfirmasi peserta, dan upload sertifikat.
+                    </p>
+                    <div class="action-buttons">
+                        <a href="{{ route('admin.event-registrations.index') }}" class="btn btn-success btn-lg w-100 rounded-pill">
+                            <i class="bi bi-calendar-check me-2"></i>Kelola Pendaftaran
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payment Management -->
+            <div class="col-lg-4 col-md-6">
+                <div class="action-card bg-white rounded-4 shadow-lg p-4 h-100 transition-all">
+                    <div class="action-icon mb-4">
+                        <i class="bi bi-credit-card text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h4 class="fw-bold text-primary mb-3">Kelola Pembayaran</h4>
+                    <p class="text-muted mb-4">
+                        Kelola pembayaran QRIS, approve pembayaran event dan produk secara manual.
+                    </p>
+                    <div class="action-buttons">
+                        <a href="{{ route('admin.payments.index') }}" class="btn btn-warning btn-lg w-100 rounded-pill">
+                            <i class="bi bi-credit-card me-2"></i>Kelola Pembayaran
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
             <!-- System Settings -->
             <div class="col-lg-4 col-md-6">
                 <div class="action-card bg-white rounded-4 shadow-lg p-4 h-100 transition-all">
@@ -275,15 +489,12 @@
         </div>
         
         <div class="row g-4">
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="activity-card bg-white rounded-4 shadow-lg p-4">
                     <h4 class="fw-bold text-primary mb-3">
                         <i class="bi bi-calendar-check me-2"></i>Event Terbaru
                     </h4>
                     <div class="activity-list">
-                        @php
-                            $recentEvents = App\Models\Event::latest()->take(3)->get();
-                        @endphp
                         @forelse($recentEvents as $event)
                         <div class="activity-item d-flex align-items-center mb-3 p-3 bg-light rounded-3">
                             <div class="activity-icon me-3">
@@ -304,15 +515,12 @@
                 </div>
             </div>
             
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <div class="activity-card bg-white rounded-4 shadow-lg p-4">
                     <h4 class="fw-bold text-primary mb-3">
                         <i class="bi bi-people me-2"></i>Divisi Terbaru
                     </h4>
                     <div class="activity-list">
-                        @php
-                            $recentDivisis = App\Models\Divisi::latest()->take(3)->get();
-                        @endphp
                         @forelse($recentDivisis as $divisi)
                         <div class="activity-item d-flex align-items-center mb-3 p-3 bg-light rounded-3">
                             <div class="activity-icon me-3">
@@ -327,6 +535,32 @@
                         <div class="text-center text-muted py-4">
                             <i class="bi bi-people-x display-4"></i>
                             <p class="mt-2">Belum ada divisi</p>
+                        </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="activity-card bg-white rounded-4 shadow-lg p-4">
+                    <h4 class="fw-bold text-primary mb-3">
+                        <i class="bi bi-cart-check me-2"></i>Pesanan Terbaru
+                    </h4>
+                    <div class="activity-list">
+                        @forelse($recentOrders as $order)
+                        <div class="activity-item d-flex align-items-center mb-3 p-3 bg-light rounded-3">
+                            <div class="activity-icon me-3">
+                                <i class="bi bi-cart-check text-warning"></i>
+                            </div>
+                            <div class="activity-content flex-grow-1">
+                                <h6 class="fw-bold mb-1">{{ $order->customer_name }}</h6>
+                                <p class="text-muted small mb-0">{{ $order->produk->name ?? 'Produk tidak ditemukan' }} - {{ $order->getStatusLabel() }}</p>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-cart-x display-4"></i>
+                            <p class="mt-2">Belum ada pesanan</p>
                         </div>
                         @endforelse
                     </div>

@@ -1,5 +1,26 @@
 @extends('layout')
 @section('title', 'Event | HIMAKOM UYM')
+@section('meta_description', 'Daftar event dan kegiatan HIMAKOM UYM: workshop, seminar, lomba, dan lainnya.')
+@section('jsonld')
+{
+  "&#64;context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Event HIMAKOM UYM",
+  "itemListElement": [
+    @foreach($events as $i => $e)
+    {
+      "&#64;type": "Event",
+      "name": "{{ addslashes($e->title) }}",
+      "startDate": "{{ \Carbon\Carbon::parse($e->date)->toIso8601String() }}",
+      @if($e->location)"location": {"&#64;type": "Place", "name": "{{ addslashes($e->location) }}"},@endif
+      @if($e->image)"image": "{{ asset('uploads/'.$e->image) }}",@endif
+      "description": "{{ addslashes(Str::limit($e->description, 160)) }}",
+      "position": {{ $i + 1 }}
+    }@if(!$loop->last),@endif
+    @endforeach
+  ]
+}
+@endsection
 @section('content')
 
 <!-- Hero Section -->
@@ -64,19 +85,24 @@
             @foreach($events as $index => $event)
             <div class="col-lg-4 col-md-6">
                 <div class="event-card card border-0 shadow-lg h-100 rounded-4 overflow-hidden transition-all animate__animated animate__fadeInUp" 
-                     style="animation-delay: {{ $index * 0.1 }}s;">
+                     style="animation-delay: {{ $index * 0.1 }}s; transition: all 0.3s ease;"
+                     onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 45px rgba(25, 118, 210, 0.2)';"
+                     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 25px rgba(0,0,0,0.1)';"
                     
                     <!-- Event Image -->
-                    <div class="event-image-container position-relative">
+                    <div class="event-image-container position-relative overflow-hidden rounded-top">
                         @if($event->image)
-                            <img src="{{ asset('storage/'.$event->image) }}" 
+                            <img src="{{ asset('uploads/'.$event->image) }}" 
                                  class="event-image w-100" 
-                                 style="height: 200px; object-fit: cover;" 
-                                 alt="{{ $event->title }}">
+                                 style="height: 250px; object-fit: cover; transition: transform 0.3s ease;" 
+                                 alt="{{ $event->title }}"
+                                 onerror="this.src='https://via.placeholder.com/400x250/1976d2/ffffff?text=Event+HIMAKOM'"
+                                 onmouseover="this.style.transform='scale(1.05)'"
+                                 onmouseout="this.style.transform='scale(1)'">
                         @else
-                            <div class="event-image-placeholder w-100 d-flex align-items-center justify-content-center bg-primary"
-                                 style="height: 200px;">
-                                <i class="bi bi-calendar-event text-white" style="font-size: 3rem;"></i>
+                            <div class="event-image-placeholder w-100 d-flex align-items-center justify-content-center bg-gradient"
+                                 style="height: 250px; background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);">
+                                <i class="bi bi-calendar-event text-white" style="font-size: 3rem; opacity: 0.8;"></i>
                             </div>
                         @endif
                         
@@ -111,30 +137,98 @@
                                 <span class="text-muted">{{ \Carbon\Carbon::parse($event->date)->format('H:i') }} WIB</span>
                             </div>
                             @if($event->location)
-                            <div class="detail-item d-flex align-items-center">
+                            <div class="detail-item d-flex align-items-center mb-2">
                                 <i class="bi bi-geo-alt text-primary me-3"></i>
                                 <span class="text-muted">{{ $event->location }}</span>
                             </div>
                             @endif
+                            
+                            <!-- Event Price -->
+                            <div class="detail-item d-flex align-items-center">
+                                @if($event->is_paid && $event->price)
+                                    <i class="bi bi-currency-dollar text-success me-3"></i>
+                                    <span class="text-success fw-semibold">Rp {{ number_format($event->price, 0, ',', '.') }}</span>
+                                @else
+                                    <i class="bi bi-gift text-success me-3"></i>
+                                    <span class="text-success fw-semibold">Gratis</span>
+                                @endif
+                            </div>
                         </div>
                         
                         <!-- Event Actions -->
                         <div class="event-actions">
-                            @if($event->google_form_link)
-                                <a href="{{ $event->google_form_link }}" target="_blank" class="btn btn-success btn-sm rounded-pill w-100">
-                                    <i class="bi bi-clipboard-check me-2"></i>Daftar
-                                </a>
+                            @if($event->event_type === 'public')
+                                {{-- Public Event: Show Google Form Link --}}
+                                @if($event->google_form_link)
+                                    <a href="{{ $event->google_form_link }}" target="_blank" class="btn btn-info btn-sm rounded-pill w-100 mb-2">
+                                        <i class="bi bi-box-arrow-up-right me-2"></i>Daftar via Google Form
+                                    </a>
+                                @else
+                                    <button class="btn btn-secondary btn-sm rounded-pill w-100 mb-2" disabled>
+                                        <i class="bi bi-info-circle me-2"></i>Link Pendaftaran Belum Tersedia
+                                    </button>
+                                @endif
                             @else
+                                {{-- Free/Paid Event: Show Internal Registration --}}
                                 @auth
-                                    <a href="{{ route('event-registrations.create', $event) }}" class="btn btn-success btn-sm rounded-pill w-100">
+                                    <a href="{{ route('event-registrations.create', $event) }}" class="btn btn-success btn-sm rounded-pill w-100 mb-2">
                                         <i class="bi bi-calendar-plus me-2"></i>Daftar Event
                                     </a>
                                 @else
-                                    <a href="{{ route('login') }}" class="btn btn-warning btn-sm rounded-pill w-100">
-                                        <i class="bi bi-lock me-2"></i>Login untuk Daftar
+                                    <a href="{{ route('login') }}?redirect={{ urlencode(route('event-registrations.create', $event)) }}" class="btn btn-primary btn-sm rounded-pill w-100 mb-2">
+                                        <i class="bi bi-box-arrow-in-right me-2"></i>Login untuk Daftar
                                     </a>
                                 @endauth
                             @endif
+                            
+                            @if($event->whatsapp_group_link)
+                                @auth
+                                    @php
+                                        $userRegistration = \App\Models\EventRegistration::where('user_id', auth()->id())
+                                            ->where('event_id', $event->id)
+                                            ->first();
+                                    @endphp
+                                    @if($userRegistration && $userRegistration->canAccessWhatsAppGroup())
+                                        <a href="{{ route('events.whatsapp.join', $userRegistration->id) }}" class="btn btn-outline-success btn-sm rounded-pill w-100 mb-2">
+                                            <i class="bi bi-whatsapp me-2"></i>Grup WhatsApp
+                                        </a>
+                                    @elseif($userRegistration)
+                                        <button class="btn btn-outline-secondary btn-sm rounded-pill w-100 mb-2" 
+                                                disabled 
+                                                title="Selesaikan pembayaran terlebih dahulu untuk bergabung ke grup WhatsApp">
+                                            <i class="bi bi-whatsapp me-2"></i>Grup WhatsApp
+                                        </button>
+                                    @else
+                                        <button class="btn btn-outline-secondary btn-sm rounded-pill w-100 mb-2" 
+                                                disabled 
+                                                title="Daftar event terlebih dahulu untuk bergabung ke grup WhatsApp">
+                                            <i class="bi bi-whatsapp me-2"></i>Grup WhatsApp
+                                        </button>
+                                    @endif
+                                @else
+                                    <button class="btn btn-outline-secondary btn-sm rounded-pill w-100 mb-2" 
+                                            disabled 
+                                            title="Login dan daftar event terlebih dahulu untuk bergabung ke grup WhatsApp">
+                                        <i class="bi bi-whatsapp me-2"></i>Grup WhatsApp
+                                    </button>
+                                @endauth
+                            @endif
+                            
+                            <!-- Detail Button -->
+                            <button type="button" 
+                                    class="btn btn-outline-primary btn-sm rounded-pill w-100 event-detail-btn" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#eventModal"
+                                    data-title="{{ $event->title }}"
+                                    data-description="{{ strip_tags($event->description) }}"
+                                    data-date="{{ $event->getFormattedDateAttribute() }}"
+                                    data-location="{{ $event->location ?? 'Lokasi akan diumumkan' }}"
+                                    data-raw-date="{{ $event->date }}"
+                                    data-is-paid="{{ $event->is_paid ? 'true' : 'false' }}"
+                                    data-price="{{ $event->price ?? 0 }}"
+                                    data-qris="{{ $event->qris_image_path ? asset('uploads/'.$event->qris_image_path) : '' }}">
+                                <i class="bi bi-info-circle me-2"></i>Lihat Detail
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -456,50 +550,81 @@
 </style>
 
 <script>
-function showEventDetails(title, description, date, location, rawDate) {
+// Event listener untuk tombol detail event
+document.addEventListener('DOMContentLoaded', function() {
+    const eventDetailButtons = document.querySelectorAll('.event-detail-btn');
     const modalContent = document.getElementById('eventModalContent');
     
-    // Parse the raw date for proper formatting
-    const parsedDate = new Date(rawDate);
-    const formattedDate = parsedDate.toLocaleDateString('id-ID', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'Asia/Jakarta'
-    }) + ' WIB';
-    
-    modalContent.innerHTML = `
-        <div class="text-center mb-4">
-            <div class="event-icon-large mb-3">
-                <i class="bi bi-calendar-event text-primary" style="font-size: 4rem;"></i>
-            </div>
-            <h4 class="fw-bold text-primary mb-2">${title}</h4>
-        </div>
-        <div class="event-info-grid">
-            <div class="info-item mb-3">
-                <i class="bi bi-calendar2-week text-primary me-2"></i>
-                <span class="fw-semibold">Tanggal & Waktu:</span> ${formattedDate}
-            </div>
-            <div class="info-item mb-3">
-                <i class="bi bi-geo-alt text-primary me-2"></i>
-                <span class="fw-semibold">Lokasi:</span> ${location}
-            </div>
-            <div class="info-item mb-3">
-                <i class="bi bi-info-circle text-primary me-2"></i>
-                <span class="fw-semibold">Deskripsi:</span>
-            </div>
-            <div class="event-description p-3 bg-light rounded-3">
-                <p class="mb-0">${description}</p>
-            </div>
-        </div>
-    `;
-    
-    const modal = new bootstrap.Modal(document.getElementById('eventModal'));
-    modal.show();
-}
+    eventDetailButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const title = this.getAttribute('data-title');
+            const description = this.getAttribute('data-description');
+            const date = this.getAttribute('data-date');
+            const location = this.getAttribute('data-location');
+            const rawDate = this.getAttribute('data-raw-date');
+            const isPaid = this.getAttribute('data-is-paid') === 'true';
+            const price = this.getAttribute('data-price');
+            const qrisImage = this.getAttribute('data-qris');
+            
+            console.log('Event detail clicked:', {title, description, date, location, isPaid, price});
+            
+            // Format price
+            const formattedPrice = price && price > 0 ? new Intl.NumberFormat('id-ID').format(price) : '';
+            
+            // Build modal content
+            let modalHTML = `
+                <div class="text-center mb-4">
+                    <div class="event-icon-large mb-3">
+                        <i class="bi bi-calendar-event text-primary" style="font-size: 4rem;"></i>
+                    </div>
+                    <h4 class="fw-bold text-primary mb-2">${title}</h4>
+                </div>
+                <div class="event-info-grid">
+                    <div class="info-item mb-3">
+                        <i class="bi bi-calendar2-week text-primary me-2"></i>
+                        <span class="fw-semibold">Tanggal & Waktu:</span> ${date}
+                    </div>
+                    <div class="info-item mb-3">
+                        <i class="bi bi-geo-alt text-primary me-2"></i>
+                        <span class="fw-semibold">Lokasi:</span> ${location}
+                    </div>
+                    <div class="info-item mb-3">`;
+            
+            if (isPaid && price > 0) {
+                modalHTML += `<i class="bi bi-currency-dollar text-success me-2"></i>
+                             <span class="fw-semibold">Harga:</span> <span class="text-success fw-bold">Rp ${formattedPrice}</span>`;
+            } else {
+                modalHTML += `<i class="bi bi-gift text-success me-2"></i>
+                             <span class="fw-semibold">Harga:</span> <span class="text-success fw-bold">Gratis</span>`;
+            }
+            
+            modalHTML += `</div>`;
+            
+            if (qrisImage && qrisImage.trim() !== '') {
+                modalHTML += `
+                    <div class="info-item mb-3">
+                        <i class="bi bi-qr-code text-success me-2"></i>
+                        <span class="fw-semibold">QRIS Pembayaran:</span>
+                    </div>
+                    <div class="qris-preview text-center mb-3">
+                        <img src="${qrisImage}" class="img-fluid rounded-3 shadow-sm" style="max-height: 200px;" alt="QRIS">
+                    </div>`;
+            }
+            
+            modalHTML += `
+                    <div class="info-item mb-3">
+                        <i class="bi bi-info-circle text-primary me-2"></i>
+                        <span class="fw-semibold">Deskripsi:</span>
+                    </div>
+                    <div class="event-description p-3 bg-light rounded-3">
+                        <p class="mb-0">${description}</p>
+                    </div>
+                </div>`;
+            
+            modalContent.innerHTML = modalHTML;
+        });
+    });
+});
 </script>
 
 @endsection

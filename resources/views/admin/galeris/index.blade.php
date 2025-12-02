@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Kelola Galeri | Admin')
+@section('page-title', 'Kelola Galeri')
 @section('content')
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -29,7 +30,7 @@
                         <td>{{ $galeri->title }}</td>
                         <td>
                             @if($galeri->image)
-                                <img src="{{ asset('storage/'.$galeri->image) }}" width="60" class="rounded shadow">
+                                <img src="{{ asset('uploads/'.$galeri->image) }}" width="60" class="rounded shadow">
                             @endif
                         </td>
                         <td>{{ Str::limit($galeri->description, 50) }}</td>

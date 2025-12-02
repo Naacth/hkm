@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Edit Divisi | Admin')
+@section('page-title', 'Edit Divisi')
 @section('content')
 
 <div class="admin-header bg-primary text-white py-4">
@@ -60,7 +61,7 @@
                                    accept="image/*">
                             @if($divisi->photo)
                                 <div class="mt-3">
-                                    <img src="{{ asset('storage/'.$divisi->photo) }}" 
+                                    <img src="{{ asset('uploads/'.$divisi->photo) }}" 
                                          class="img-fluid rounded-3 shadow-sm" 
                                          style="max-height: 200px;">
                                 </div>
@@ -89,7 +90,7 @@
                                    accept="image/*">
                             @if($divisi->logo)
                                 <div class="mt-3">
-                                    <img src="{{ asset('storage/'.$divisi->logo) }}" 
+                                    <img src="{{ asset('uploads/'.$divisi->logo) }}" 
                                          class="img-fluid rounded-3 shadow-sm" 
                                          style="max-height: 150px;">
                                 </div>
@@ -107,7 +108,7 @@
                                    accept="image/*">
                             @if($divisi->group_photo)
                                 <div class="mt-3">
-                                    <img src="{{ asset('storage/'.$divisi->group_photo) }}" 
+                                    <img src="{{ asset('uploads/'.$divisi->group_photo) }}" 
                                          class="img-fluid rounded-3 shadow-sm" 
                                          style="max-height: 200px;">
                                 </div>

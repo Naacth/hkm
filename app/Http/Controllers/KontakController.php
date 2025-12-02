@@ -95,4 +95,12 @@ class KontakController extends Controller
         $kontak = Kontak::latest()->first();
         return view('kontak', compact('kontak'));
     }
+
+    /**
+     * Get contact data for footer
+     */
+    public static function getFooterContact()
+    {
+        return Kontak::latest()->first();
+    }
 }

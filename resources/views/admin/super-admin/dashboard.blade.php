@@ -1,5 +1,6 @@
-@extends('layout')
+@extends('layouts.admin')
 @section('title', 'Super Admin Dashboard | HIMAKOM UYM')
+@section('page-title', 'Super Admin Dashboard')
 @section('content')
 
 <div class="admin-header bg-primary text-white py-4">

@@ -7,26 +7,31 @@ use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Voucher;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\OrdersExport;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
     /**
      * Show order form
      */
-    public function showOrderForm($produkId)
+    public function showOrderForm($produk)
     {
-        $produk = Produk::findOrFail($produkId);
+        $produk = Produk::findOrFail($produk);
         return view('orders.create', compact('produk'));
     }
 
     /**
      * Create new order
      */
-    public function store(Request $request, $produkId)
+    public function store(Request $request, $produk)
     {
-        $produk = Produk::findOrFail($produkId);
+        $produk = Produk::findOrFail($produk);
 
-        $validator = Validator::make($request->all(), [
+        $rules = [
             'quantity' => 'required|integer|min:1',
             'payment_method' => 'required|in:qris,offline',
             'delivery_method' => 'required|in:pickup,delivery',
@@ -37,7 +42,15 @@ class OrderController extends Controller
             'customer_email' => 'required|email',
             'customer_address' => 'nullable|string',
             'notes' => 'nullable|string',
-        ]);
+            'voucher_code' => 'nullable|string|max:50',
+        ];
+
+        // Conditionally add validation rule for proof of payment
+        if ($request->input('payment_method') === 'qris') {
+            $rules['proof_of_payment_image_path'] = 'required|image|max:2048';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             return redirect()->back()
@@ -47,12 +60,35 @@ class OrderController extends Controller
 
         $totalPrice = $produk->price * $request->quantity;
 
+        $voucherCode = $request->input('voucher_code');
+        $discountPercent = null;
+        $discountAmount = 0;
+        $finalPrice = $totalPrice;
+
+        if ($voucherCode) {
+            $voucher = Voucher::active()
+                ->where('code', strtoupper($voucherCode))
+                ->where('applicable_type', 'produk')
+                ->where('applicable_id', $produk->id)
+                ->first();
+
+            if ($voucher) {
+                $discountPercent = (int) $voucher->discount_percent;
+                $discountAmount = round($totalPrice * ($discountPercent / 100), 2);
+                $finalPrice = max(0, $totalPrice - $discountAmount);
+            }
+        }
+
         $order = Order::create([
-            'user_id' => Auth::id(),
+            'user_id' => Auth::id(), // Bisa null jika tidak login
             'produk_id' => $produk->id,
             'order_number' => Order::generateOrderNumber(),
             'quantity' => $request->quantity,
             'total_price' => $totalPrice,
+            'voucher_code' => $voucherCode ? strtoupper($voucherCode) : null,
+            'voucher_discount_percent' => $discountPercent,
+            'discount_amount' => $discountAmount,
+            'final_price' => $finalPrice,
             'payment_method' => $request->payment_method,
             'delivery_method' => $request->delivery_method,
             'customer_name' => $request->customer_name,
@@ -64,6 +100,12 @@ class OrderController extends Controller
             'notes' => $request->notes,
             'status' => 'pending',
         ]);
+
+        // Handle proof of payment upload if applicable
+        if ($request->input('payment_method') === 'qris' && $request->hasFile('proof_of_payment_image_path')) {
+            $imagePath = $request->file('proof_of_payment_image_path')->store('proof_of_payments', 'public_direct');
+            $order->update(['proof_of_payment_image_path' => $imagePath]);
+        }
 
         return redirect()->route('orders.success', $order->id)
             ->with('success', 'Pesanan berhasil dibuat! Silakan tunggu konfirmasi dari admin.');
@@ -166,5 +208,14 @@ class OrderController extends Controller
         $order->update(['status' => $request->status]);
 
         return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui.');
+    }
+
+    /**
+     * Admin: Export all orders to Excel
+     */
+    public function exportOrders()
+    {
+        $fileName = 'Pesanan-' . \Str::slug(now()->format('Y-m-d H:i:s')) . '.xlsx';
+        return Excel::download(new OrdersExport(), $fileName);
     }
 }

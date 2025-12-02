@@ -1,0 +1,93 @@
+
+{
+    "version": 2,
+    "functions": {
+        "api/index.php": { 
+            "runtime": "vercel-php@0.7.0",
+            "maxDuration": 30
+        }
+    },
+    "builds": [
+        {
+            "src": "package.json",
+            "use": "@vercel/node",
+            "config": {
+                "includeFiles": ["public/**", "database/**"]
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/favicon.ico",
+            "dest": "/public/favicon.ico"
+        },
+        {
+            "src": "/robots.txt",
+            "dest": "/public/robots.txt"
+        },
+        {
+            "src": "/build/(.*)",
+            "dest": "/public/build/$1"
+        },
+        {
+            "src": "/storage/(.*)",
+            "dest": "/storage/app/public/$1"
+        },
+        {
+            "src": "/(css|js|images|fonts)/(.*)",
+            "dest": "/public/$1/$2"
+        },
+        {
+            "src": "/.*\\.(png|jpg|jpeg|gif|svg|ico|webp)$",
+            "dest": "/public/$0"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ],
+    "installCommand": "composer install --no-dev --optimize-autoloader && npm ci",
+    "buildCommand": "npm run build && php artisan config:cache && php artisan route:cache && php artisan view:cache",
+    "env": {
+        "APP_NAME": "Laravel",
+        "APP_ENV": "production",
+        "APP_KEY": "base64:6a0wTsQbhjJXR9qJKwvZFtu+/nVClnnWbid+KVsWe68=",
+        "APP_DEBUG": "false",
+        "APP_URL": "@APP_URL",
+        "APP_LOCALE": "en",
+        "APP_FALLBACK_LOCALE": "en",
+        "APP_FAKER_LOCALE": "en_US",
+        "APP_MAINTENANCE_DRIVER": "file",
+        "APP_CONFIG_CACHE": "/tmp/config.php",
+        "APP_EVENTS_CACHE": "/tmp/events.php",
+        "APP_PACKAGES_CACHE": "/tmp/packages.php",
+        "APP_ROUTES_CACHE": "/tmp/routes.php",
+        "APP_SERVICES_CACHE": "/tmp/services.php",
+        "VIEW_COMPILED_PATH": "/tmp",
+        "PHP_CLI_SERVER_WORKERS": "4",
+        "BCRYPT_ROUNDS": "12",
+        "LOG_CHANNEL": "stderr",
+        "LOG_STACK": "single",
+        "LOG_DEPRECATIONS_CHANNEL": "null",
+        "LOG_LEVEL": "error",
+        "DB_CONNECTION": "sqlite",
+        "SESSION_DRIVER": "database",
+        "SESSION_LIFETIME": "120",
+        "SESSION_ENCRYPT": "false",
+        "SESSION_PATH": "/",
+        "SESSION_DOMAIN": "null",
+        "BROADCAST_CONNECTION": "log",
+        "FILESYSTEM_DISK": "local",
+        "QUEUE_CONNECTION": "database",
+        "CACHE_STORE": "database",
+        "MAIL_MAILER": "log",
+        "MAIL_SCHEME": "null",
+        "MAIL_HOST": "127.0.0.1",
+        "MAIL_PORT": "2525",
+        "MAIL_USERNAME": "null",
+        "MAIL_PASSWORD": "null",
+        "MAIL_FROM_ADDRESS": "hello@example.com",
+        "MAIL_FROM_NAME": "${APP_NAME}",
+        "VITE_APP_NAME": "${APP_NAME}"
+    }
+}

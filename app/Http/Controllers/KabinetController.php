@@ -36,7 +36,7 @@ class KabinetController extends Controller
             'description' => 'nullable',
         ]);
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('kabinets', 'public');
+            $validated['photo'] = $request->file('photo')->store('kabinets', 'public_direct');
         }
         Kabinet::create($validated);
         return redirect()->route('kabinets.index')->with('success', 'Kabinet berhasil ditambahkan!');
@@ -70,7 +70,7 @@ class KabinetController extends Controller
             'description' => 'nullable',
         ]);
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('kabinets', 'public');
+            $validated['photo'] = $request->file('photo')->store('kabinets', 'public_direct');
         }
         $kabinet->update($validated);
         return redirect()->route('kabinets.index')->with('success', 'Kabinet berhasil diupdate!');

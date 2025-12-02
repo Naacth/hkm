@@ -11,9 +11,20 @@ class DivisiMemberController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $divisi_id = $request->get('divisi_id');
+        $divisi = null;
+        $members = collect();
+        
+        if ($divisi_id) {
+            $divisi = Divisi::find($divisi_id);
+            $members = DivisiMember::where('divisi_id', $divisi_id)->get();
+        } else {
+            $members = DivisiMember::with('divisi')->get();
+        }
+        
+        return view('admin.divisi-members.index', compact('members', 'divisi'));
     }
 
     /**
@@ -38,7 +49,7 @@ class DivisiMemberController extends Controller
             'photo' => 'nullable|image|max:2048',
         ]);
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('divisi-members', 'public');
+            $validated['photo'] = $request->file('photo')->store('divisi-members', 'public_direct');
         }
         DivisiMember::create($validated);
         return redirect()->route('divisis.edit', $validated['divisi_id'])->with('success', 'Anggota divisi berhasil ditambahkan!');
@@ -73,7 +84,7 @@ class DivisiMemberController extends Controller
             'photo' => 'nullable|image|max:2048',
         ]);
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('divisi-members', 'public');
+            $validated['photo'] = $request->file('photo')->store('divisi-members', 'public_direct');
         }
         $divisiMember->update($validated);
         return redirect()->route('divisis.edit', $validated['divisi_id'])->with('success', 'Anggota divisi berhasil diupdate!');
