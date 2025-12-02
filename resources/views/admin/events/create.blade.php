@@ -337,6 +337,8 @@
                                     </div>
                                 </div>
                             </div>
+                            </div> <!-- TUTUP certificateSettings -->
+
 
                         <!-- WhatsApp Group Link -->
                         <div class="form-group mb-4">

@@ -363,6 +363,8 @@
                                     </div>
                                 </div>
                             </div>
+                             </div>
+                            
 
                         <!-- Event Image -->
                         <div class="form-group mb-4">
