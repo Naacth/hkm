@@ -249,7 +249,7 @@
                                         <i class="bi bi-qr-code me-2"></i>QRIS Saat Ini
                                     </h6>
                                     <div class="current-qris-container">
-                                        <img src="{{ asset('uploads/'.$event->qris_image_path) }}" 
+                                        <img src="{{ asset('uploads/'.(str_contains($event->qris_image_path, 'events/') ? $event->qris_image_path : 'events/'.basename($event->qris_image_path))) }}" 
                                              class="img-fluid rounded-3 shadow-sm" 
                                              style="max-height: 200px;"
                                              alt="QRIS Saat Ini">
@@ -387,7 +387,7 @@
                                         <i class="bi bi-image me-2"></i>Gambar Saat Ini
                                     </h6>
                                     <div class="current-image-container">
-                                        <img src="{{ asset('uploads/'.$event->image) }}" 
+                                        <img src="{{ asset('uploads/'.(str_contains($event->image, 'events/') ? $event->image : 'events/'.basename($event->image))) }}" 
                                              class="img-fluid rounded-3 shadow-sm" 
                                              style="max-height: 200px;"
                                              alt="{{ $event->title }}">

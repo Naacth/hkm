@@ -69,15 +69,24 @@ class EventController extends Controller
         $validated = $request->validate($rules);
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('events', 'public_direct');
+            $image = $request->file('image');
+            $imageName = 'event-' . time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/events'), $imageName);
+            $validated['image'] = 'events/' . $imageName;
         }
 
         if ($request->hasFile('qris_image_path')) {
-            $validated['qris_image_path'] = $request->file('qris_image_path')->store('qris', 'public_direct');
+            $qrisImage = $request->file('qris_image_path');
+            $qrisImageName = 'qris-' . time() . '.' . $qrisImage->getClientOriginalExtension();
+            $qrisImage->move(public_path('uploads/qris'), $qrisImageName);
+            $validated['qris_image_path'] = 'qris/' . $qrisImageName;
         }
 
         if ($request->hasFile('certificate_template')) {
-            $validated['certificate_template'] = $request->file('certificate_template')->store('certificates', 'public_direct');
+            $certificate = $request->file('certificate_template');
+            $certName = 'cert-' . time() . '.' . $certificate->getClientOriginalExtension();
+            $certificate->move(public_path('uploads/certificates'), $certName);
+            $validated['certificate_template'] = 'certificates/' . $certName;
         }
 
         // Set is_paid based on event_type for backward compatibility
@@ -146,26 +155,35 @@ class EventController extends Controller
 
         if ($request->hasFile('image')) {
             // Delete old image if exists
-            if ($event->image) {
-                Storage::disk('public_direct')->delete($event->image);
+            if ($event->image && file_exists(public_path('uploads/' . $event->image))) {
+                unlink(public_path('uploads/' . $event->image));
             }
-            $validated['image'] = $request->file('image')->store('events', 'public_direct');
+            $image = $request->file('image');
+            $imageName = 'event-' . time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/events'), $imageName);
+            $validated['image'] = 'events/' . $imageName;
         }
 
         if ($request->hasFile('qris_image_path')) {
             // Delete old QRIS image if exists
-            if ($event->qris_image_path) {
-                Storage::disk('public_direct')->delete($event->qris_image_path);
+            if ($event->qris_image_path && file_exists(public_path('uploads/' . $event->qris_image_path))) {
+                unlink(public_path('uploads/' . $event->qris_image_path));
             }
-            $validated['qris_image_path'] = $request->file('qris_image_path')->store('qris', 'public_direct');
+            $qrisImage = $request->file('qris_image_path');
+            $qrisImageName = 'qris-' . time() . '.' . $qrisImage->getClientOriginalExtension();
+            $qrisImage->move(public_path('uploads/qris'), $qrisImageName);
+            $validated['qris_image_path'] = 'qris/' . $qrisImageName;
         }
 
         if ($request->hasFile('certificate_template')) {
             // Delete old certificate template if exists
-            if ($event->certificate_template) {
-                Storage::disk('public_direct')->delete($event->certificate_template);
+            if ($event->certificate_template && file_exists(public_path('uploads/' . $event->certificate_template))) {
+                unlink(public_path('uploads/' . $event->certificate_template));
             }
-            $validated['certificate_template'] = $request->file('certificate_template')->store('certificates', 'public_direct');
+            $certificate = $request->file('certificate_template');
+            $certName = 'cert-' . time() . '.' . $certificate->getClientOriginalExtension();
+            $certificate->move(public_path('uploads/certificates'), $certName);
+            $validated['certificate_template'] = 'certificates/' . $certName;
         }
 
         // Set is_paid based on event_type for backward compatibility

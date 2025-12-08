@@ -4,15 +4,15 @@
 @php $about = $about ?? null; @endphp
 
 <!-- Hero Section -->
-<div class="hero-section position-relative overflow-hidden" style="background: linear-gradient(135deg, #1976d2 0%, #3F3F9C 100%); min-height: 60vh; display: flex; align-items: center;">
+<div class="hero-section position-relative overflow-hidden" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); min-height: 60vh; display: flex; align-items: center; padding: 6rem 0;">
     <div class="container position-relative z-3">
         <div class="row align-items-center">
             <div class="col-lg-6 text-white">
                 <div class="hero-content animate__animated animate__fadeInLeft">
-                    <h1 class="display-4 fw-bold mb-4">
+                    <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInUp">
                         Tentang <span class="text-warning">HIMAKOM</span>
                     </h1>
-                    <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6;">
+                    <p class="lead mb-4" style="font-size: 1.3rem; line-height: 1.6;" data-aos="fade-up" data-aos-delay="100">
                         {{ $about->description ?? 'Himpunan Mahasiswa Ilmu Komputer Universitas Yatsi Madani yang berdedikasi untuk mengembangkan potensi mahasiswa dalam bidang teknologi informasi.' }}
                     </p>
                     <div class="hero-stats">
@@ -40,14 +40,16 @@
                 </div>
             </div>
             <div class="col-lg-6 text-center animate__animated animate__fadeInRight">
-                <div class="hero-image-container">
+                <div class="hero-image-container" data-aos="fade-left">
                     @if(!empty($about?->image))
                         <img src="{{ asset('uploads/'.$about->image) }}" 
-                             class="hero-image rounded-4 shadow-2xl" 
+                             class="hero-image rounded-4 shadow-2xl img-fluid" 
+                             alt="Tentang HIMAKOM UYM"
                              style="max-width: 100%; height: auto; border: 4px solid rgba(255,255,255,0.3);">
                     @else
                         <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80" 
-                             class="hero-image rounded-4 shadow-2xl" 
+                             class="hero-image rounded-4 shadow-2xl img-fluid" 
+                             alt="Tentang HIMAKOM UYM"
                              style="max-width: 100%; height: auto; border: 4px solid rgba(255,255,255,0.3);">
                     @endif
                 </div>
@@ -66,9 +68,9 @@
 </div>
 
 <!-- About Content Section -->
-<div class="about-content-section py-5">
+<div class="about-content-section py-5 section-spacing">
     <div class="container">
-        <div class="row g-5 align-items-center">
+        <div class="row g-5 align-items-center" data-aos="fade-up">
             <div class="col-lg-6">
                 <div class="about-text">
                     <h2 class="display-5 fw-bold text-primary mb-4">{{ $about->title ?? 'Tentang HIMAKOM UYM' }}</h2>
@@ -144,9 +146,9 @@
 </div>
 
 <!-- History Section -->
-<div class="history-section py-5" style="background: #f8f9fa;">
+<div class="history-section py-5 bg-light">
     <div class="container">
-        <div class="text-center mb-5">
+        <div class="text-center mb-5" data-aos="fade-up">
             <h2 class="display-5 fw-bold text-primary mb-3">Sejarah & Perjalanan</h2>
             <p class="lead text-muted">Perjalanan panjang HIMAKOM dalam membangun komunitas teknologi</p>
         </div>
@@ -270,7 +272,7 @@
 </div>
 
 <!-- Mission Vision Section -->
-<div class="mission-vision-section py-5">
+<div class="mission-vision-section py-5 section-spacing">
     <div class="container">
         <div class="row g-4">
             <div class="col-lg-6">
@@ -302,6 +304,7 @@
         </div>
     </div>
 </div>
+
 <style>
 /* Hero Section Styles */
 .hero-section {
@@ -378,123 +381,106 @@
 
 /* Hero Stats */
 .hero-stats {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
 }
 
 .stat-item {
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 1rem;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
     text-align: center;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .stat-number {
-    font-size: 1.8rem;
+    font-size: 1.75rem;
     color: #fff;
+    margin-bottom: 0.25rem;
 }
 
 .stat-label {
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
 }
 
-/* Hero Image */
-.hero-image-container {
+/* About Content Section */
+.about-content-section {
     position: relative;
+    overflow: hidden;
 }
 
-.hero-image {
-    transition: transform 0.3s ease;
-}
-
-.hero-image:hover {
-    transform: scale(1.05);
+.about-text {
+    position: relative;
+    z-index: 2;
 }
 
 /* Values Section */
 .value-item {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
     transition: all 0.3s ease;
+    border-left: 4px solid var(--primary-color);
 }
 
 .value-item:hover {
-    transform: translateX(10px);
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
 .value-icon {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--primary-color);
 }
 
-/* Timeline */
-.timeline {
-    position: relative;
-    padding-left: 30px;
+/* History Section */
+.history-content, .achievements-card {
+    transition: all 0.3s ease;
 }
 
-.timeline::before {
-    content: '';
-    position: absolute;
-    left: 15px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(135deg, #1976d2 0%, #3F3F9C 100%);
+.history-content:hover, .achievements-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
 }
 
 .timeline-item {
     position: relative;
+    padding-left: 2rem;
     margin-bottom: 2rem;
+    border-left: 2px solid var(--primary-color);
 }
 
-.timeline-marker {
-    position: absolute;
-    left: -22px;
-    top: 5px;
-    width: 12px;
-    height: 12px;
-    background: #1976d2;
-    border-radius: 50%;
-    border: 3px solid #fff;
-    box-shadow: 0 0 0 3px #1976d2;
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-date {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
 }
 
 .timeline-content {
-    background: #f8f9fa;
-    padding: 1rem;
+    background: #fff;
+    padding: 1.25rem;
     border-radius: 0.5rem;
-    border-left: 4px solid #1976d2;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-/* Achievement Items */
-.achievement-item {
-    transition: all 0.3s ease;
-}
-
-.achievement-item:hover {
-    transform: translateX(10px);
-}
-
-.achievement-icon {
-    width: 40px;
-    height: 40px;
-    background: #f8f9fa;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-}
-
-/* Mission Vision Cards */
+/* Mission & Vision */
 .mission-card, .vision-card {
     transition: all 0.3s ease;
+    height: 100%;
+    border: none;
+    border-radius: 0.75rem;
+    overflow: hidden;
 }
 
 .mission-card:hover, .vision-card:hover {
@@ -502,10 +488,8 @@
     box-shadow: 0 15px 40px rgba(0,0,0,0.1) !important;
 }
 
-.card-icon {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #1976d2 0%, #3F3F9C 100%);
+.mission-card .card-body, .vision-card .card-body {
+    padding: 2rem;
     border-radius: 50%;
     display: flex;
     align-items: center;

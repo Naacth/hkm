@@ -13,7 +13,7 @@
       "name": "{{ addslashes($e->title) }}",
       "startDate": "{{ \Carbon\Carbon::parse($e->date)->toIso8601String() }}",
       @if($e->location)"location": {"&#64;type": "Place", "name": "{{ addslashes($e->location) }}"},@endif
-      @if($e->image)"image": "{{ asset('uploads/'.$e->image) }}",@endif
+      @if($e->image)"image": "{{ $e->image_url }}",@endif
       "description": "{{ addslashes(Str::limit($e->description, 160)) }}",
       "position": {{ $i + 1 }}
     }@if(!$loop->last),@endif
@@ -92,7 +92,7 @@
                     <!-- Event Image -->
                     <div class="event-image-container position-relative overflow-hidden rounded-top">
                         @if($event->image)
-                            <img src="{{ asset('uploads/'.$event->image) }}" 
+                            <img src="{{ $event->image_url }}" 
                                  class="event-image w-100" 
                                  style="height: 250px; object-fit: cover; transition: transform 0.3s ease;" 
                                  alt="{{ $event->title }}"
@@ -248,7 +248,7 @@
                                     data-raw-date="{{ $event->date }}"
                                     data-is-paid="{{ $event->is_paid ? 'true' : 'false' }}"
                                     data-price="{{ $event->price ?? 0 }}"
-                                    data-qris="{{ $event->qris_image_path ? asset('uploads/'.$event->qris_image_path) : '' }}">
+                                    data-qris="{{ $event->qris_image_url ?? '' }}">
                                 <i class="bi bi-info-circle me-2"></i>Lihat Detail
                             </button>
                         </div>

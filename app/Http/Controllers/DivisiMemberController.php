@@ -48,8 +48,16 @@ class DivisiMemberController extends Controller
             'batch' => 'nullable|string|max:50',
             'photo' => 'nullable|image|max:2048',
         ]);
+        
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('divisi-members', 'public_direct');
+            $photo = $request->file('photo');
+            $photoName = 'member-' . time() . '.' . $photo->getClientOriginalExtension();
+            // Buat direktori jika belum ada
+            if (!file_exists(public_path('uploads/divisi-members'))) {
+                mkdir(public_path('uploads/divisi-members'), 0755, true);
+            }
+            $photo->move(public_path('uploads/divisi-members'), $photoName);
+            $validated['photo'] = 'divisi-members/' . $photoName;
         }
         DivisiMember::create($validated);
         return redirect()->route('divisis.edit', $validated['divisi_id'])->with('success', 'Anggota divisi berhasil ditambahkan!');
@@ -83,8 +91,21 @@ class DivisiMemberController extends Controller
             'batch' => 'nullable|string|max:50',
             'photo' => 'nullable|image|max:2048',
         ]);
+        
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('divisi-members', 'public_direct');
+            // Hapus foto lama jika ada
+            if ($divisiMember->photo && file_exists(public_path('uploads/' . $divisiMember->photo))) {
+                unlink(public_path('uploads/' . $divisiMember->photo));
+            }
+            
+            $photo = $request->file('photo');
+            $photoName = 'member-' . time() . '.' . $photo->getClientOriginalExtension();
+            // Buat direktori jika belum ada
+            if (!file_exists(public_path('uploads/divisi-members'))) {
+                mkdir(public_path('uploads/divisi-members'), 0755, true);
+            }
+            $photo->move(public_path('uploads/divisi-members'), $photoName);
+            $validated['photo'] = 'divisi-members/' . $photoName;
         }
         $divisiMember->update($validated);
         return redirect()->route('divisis.edit', $validated['divisi_id'])->with('success', 'Anggota divisi berhasil diupdate!');

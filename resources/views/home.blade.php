@@ -12,8 +12,9 @@
 @endsection
 @section('content')
 
+@section('hero')
 <!-- Hero Section -->
-<div class="hero-section position-relative overflow-hidden" style="background: linear-gradient(135deg, #1976d2 0%, #1565c0 50%, #0d47a1 100%); min-height: 100vh; display: flex; align-items: center;">
+<div class="hero-section position-relative overflow-hidden" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); min-height: 100vh; display: flex; align-items: center;">
     <div class="container position-relative z-3">
         <div class="row align-items-center">
             <div class="col-lg-6 text-white">
@@ -23,10 +24,10 @@
                             <i class="bi bi-star-fill me-2"></i>Organisasi Mahasiswa Terdepan
                         </span>
                     </div>
-                    <h1 class="display-2 fw-bold mb-4 hero-title">
+                    <h1 class="display-4 display-lg-2 fw-bold mb-4 hero-title">
                         <span class="text-gradient">HIMAKOM</span>
                         <br>
-                        <span style="font-size: 0.7em; font-weight: 600;">Universitas Yatsi Madani</span>
+                        <span class="fs-4 fs-lg-3 fw-medium">Universitas Yatsi Madani</span>
                     </h1>
                     <p class="lead mb-4" style="font-size: 1.4rem; line-height: 1.7; opacity: 0.95;">
                         Himpunan Mahasiswa <strong>Ilmu Komputer</strong> yang berdedikasi mengembangkan potensi dan kreativitas mahasiswa
@@ -59,11 +60,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="hero-buttons">
-                        <a href="/about" class="btn btn-light btn-lg rounded-pill me-3 mb-3 px-5 py-3 shadow-lg">
+                    <div class="hero-buttons d-flex flex-wrap gap-3">
+                        <a href="/about" class="btn btn-light btn-lg rounded-pill px-4 py-3 shadow-lg" style="min-width: 180px;">
                             <i class="bi bi-info-circle me-2"></i>Tentang Kami
                         </a>
-                        <a href="/event" class="btn btn-outline-light btn-lg rounded-pill mb-3 px-5 py-3 shadow-lg">
+                        <a href="/event" class="btn btn-outline-light btn-lg rounded-pill px-4 py-3 shadow-lg" style="min-width: 180px;">
                             <i class="bi bi-calendar-event me-2"></i>Lihat Event
                         </a>
                     </div>
@@ -105,33 +106,36 @@
     </div>
 </div>
 
+</div>
+<!-- End Hero Section -->
+
 <!-- Stats Section -->
-<div class="stats-section py-5" style="background: #f8f9fa;">
+<div class="stats-section py-5 bg-light">
     <div class="container">
         <div class="row g-4 text-center">
             <div class="col-md-3">
-                <div class="stat-card bg-white rounded-4 shadow-sm p-4">
+                <div class="stat-card bg-white rounded-4 shadow-sm p-4 h-100 transition-all">
                     <i class="bi bi-people-fill text-primary display-4 mb-3"></i>
                     <h3 class="fw-bold text-primary mb-2 counter" data-target="{{ $totalMembers ?? 50 }}">{{ $totalMembers ?? 50 }}+</h3>
                     <p class="text-muted mb-0">Anggota Aktif</p>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card bg-white rounded-4 shadow-sm p-4">
+                <div class="stat-card bg-white rounded-4 shadow-sm p-4 h-100 transition-all">
                     <i class="bi bi-calendar-check text-primary display-4 mb-3"></i>
                     <h3 class="fw-bold text-primary mb-2 counter" data-target="{{ $totalEvents ?? 5 }}">{{ $totalEvents ?? 5 }}+</h3>
                     <p class="text-muted mb-0">Event Aktif</p>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card bg-white rounded-4 shadow-sm p-4">
+                <div class="stat-card bg-white rounded-4 shadow-sm p-4 h-100 transition-all">
                     <i class="bi bi-diagram-3 text-primary display-4 mb-3"></i>
                     <h3 class="fw-bold text-primary mb-2 counter" data-target="{{ $divisiCount ?? 5 }}">{{ $divisiCount ?? 5 }}+</h3>
                     <p class="text-muted mb-0">Divisi</p>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card bg-white rounded-4 shadow-sm p-4">
+                <div class="stat-card bg-white rounded-4 shadow-sm p-4 h-100 transition-all">
                     <i class="bi bi-award text-primary display-4 mb-3"></i>
                     <h3 class="fw-bold text-primary mb-2 counter" data-target="{{ $upcomingEvents ?? 3 }}">{{ $upcomingEvents ?? 3 }}+</h3>
                     <p class="text-muted mb-0">Event Mendatang</p>
@@ -188,6 +192,9 @@
     </div>
 </div>
 
+@endsection
+
+@section('content')
 <!-- Latest Events Section -->
 @if($latestEvents && $latestEvents->count() > 0)
 <div class="events-section py-5" style="background: #f8f9fa;">
@@ -202,7 +209,7 @@
                 <div class="event-card bg-white rounded-4 shadow-sm h-100 overflow-hidden transition-all">
                     <div class="event-image-container position-relative">
                         @if($event->image)
-                            <img src="{{ asset('uploads/'.$event->image) }}" class="img-fluid w-100" style="height: 200px; object-fit: cover;" alt="{{ $event->title }}">
+                            <img src="{{ $event->image_url }}" class="img-fluid w-100" style="height: 200px; object-fit: cover;" alt="{{ $event->title }}">
                         @else
                             <div class="bg-primary d-flex align-items-center justify-content-center" style="height: 200px;">
                                 <i class="bi bi-calendar-event text-white" style="font-size: 3rem;"></i>
@@ -663,8 +670,20 @@
 
 /* Testimonial Cards */
 .testimonial-card {
-    transition: all 0.3s ease;
-    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.testimonial-card .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.testimonial-card .testimonial-text {
+    flex: 1;
 }
 
 .testimonial-card:hover {
@@ -674,6 +693,113 @@
 
 .quote-icon {
     opacity: 0.7;
+}
+
+/* Responsive Styles */
+@media (max-width: 991.98px) {
+    .hero-section {
+        text-align: center;
+        padding: 4rem 0;
+    }
+    
+    .hero-image-container {
+        margin-top: 3rem;
+    }
+    
+    .hero-buttons {
+        justify-content: center;
+    }
+    
+    .stat-card {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .section-spacing {
+        padding: 3rem 0;
+    }
+    
+    .feature-item {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Animation for elements */
+.fade-in {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Card hover effect */
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+}
+
+/* Button hover effect */
+.btn-hover {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.2);
+    transition: width 0.3s ease;
+    z-index: -1;
+}
+
+.btn-hover:hover::after {
+    width: 100%;
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.loading {
+    animation: pulse 1.5s infinite;
+    background: #f0f0f0;
+    border-radius: 0.25rem;
+}
+
+/* Responsive images */
+.img-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Section spacing */
+.section-spacing {
+    padding: 5rem 0;
 }
 
 .author-avatar {

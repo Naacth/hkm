@@ -2,7 +2,7 @@
 <html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title><?php echo $__env->yieldContent('title', 'HIMAKOM Universitas Yatsi Madani'); ?></title>
     <?php if (! empty(trim($__env->yieldContent('meta_description')))): ?>
     <meta name="description" content="<?php echo $__env->yieldContent('meta_description'); ?>">
@@ -17,9 +17,37 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', Arial, sans-serif; }
+        :root {
+            --primary-color: #1976d2;
+            --primary-dark: #0d47a1;
+            --accent-color: #64b5f6;
+            --text-light: #f8f9fa;
+            --text-dark: #212529;
+            --bg-light: #f8f9fa;
+            --transition: all 0.3s ease;
+        }
+        
+        body { 
+            font-family: 'Montserrat', Arial, sans-serif; 
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Responsive Typography */
+        html { font-size: 16px; }
+        @media (max-width: 768px) { html { font-size: 15px; } }
+        @media (max-width: 576px) { html { font-size: 14px; } }
+        /* Navbar Styles */
         .navbar {
-            background: linear-gradient(90deg, #0d47a1 60%, #1976d2 100%) !important;
+            background: linear-gradient(90deg, var(--primary-dark) 60%, var(--primary-color) 100%) !important;
+            padding: 0.8rem 0;
+            transition: var(--transition);
+        }
+        
+        .navbar.scrolled {
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         .navbar .nav-link, .navbar .navbar-brand {
             transition: color 0.2s, transform 0.2s;
@@ -73,12 +101,56 @@
             color: #1976d2 !important;
             transform: rotate(-12deg) scale(1.2);
         }
-        .btn-primary, .btn-primary:active, .btn-primary:focus {
-            background: linear-gradient(90deg, #1976d2 60%, #64b5f6 100%) !important;
-            border: none;
+        /* Button Styles */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
         }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            width: 100%;
+        }
+        
+        .btn-primary, .btn-primary:active, .btn-primary:focus {
+            background: linear-gradient(90deg, var(--primary-color) 60%, var(--accent-color) 100%) !important;
+            border: none;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+        }
+        
         .btn-primary:hover {
-            background: #1565c0 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            background: transparent;
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
         .bg-blue-gradient {
             background: linear-gradient(90deg, #1976d2 60%, #64b5f6 100%) !important;
@@ -209,9 +281,15 @@
         </div>
     </nav>
     <main class="flex-fill py-4">
+        <?php echo $__env->yieldContent('hero'); ?>
         <div class="container">
             <?php echo $__env->yieldContent('content'); ?>
         </div>
+        
+        <!-- Back to Top Button -->
+        <button onclick="topFunction()" id="backToTop" title="Go to top" class="btn btn-primary rounded-circle position-fixed" style="bottom: 20px; right: 20px; width: 50px; height: 50px; display: none; z-index: 99;">
+            <i class="bi bi-arrow-up"></i>
+        </button>
     </main>
     <footer class="footer mt-auto shadow-lg">
         <div class="container py-5">
@@ -440,7 +518,45 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Initialize Bootstrap dropdowns -->
+    <!-- Back to Top Button Script -->
     <script>
+        // Back to top button
+        window.onscroll = function() {
+            scrollFunction();
+            navbarScroll();
+        };
+        
+        function scrollFunction() {
+            var backToTopBtn = document.getElementById("backToTop");
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                backToTopBtn.style.display = "flex";
+                backToTopBtn.style.justifyContent = "center";
+                backToTopBtn.style.alignItems = "center";
+            } else {
+                backToTopBtn.style.display = "none";
+            }
+        }
+        
+        function topFunction() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+        
+        // Navbar scroll effect
+        function navbarScroll() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+        
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize all dropdowns
             var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));

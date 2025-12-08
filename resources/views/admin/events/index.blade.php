@@ -106,7 +106,7 @@
                             <td class="px-4 py-3">
                                 @if($event->image)
                                     <div class="event-image-container">
-                                        <img src="{{ asset('uploads/'.$event->image) }}" 
+                                        <img src="{{ asset('uploads/'.(str_contains($event->image, 'events/') ? $event->image : 'events/'.basename($event->image))) }}" 
                                              class="event-thumbnail rounded-3 shadow-sm" 
                                              alt="{{ $event->title }}"
                                              data-bs-toggle="modal" 
@@ -123,7 +123,7 @@
                                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body p-0">
-                                                    <img src="{{ asset('uploads/'.$event->image) }}" 
+                                                    <img src="{{ asset('uploads/'.(str_contains($event->image, 'events/') ? $event->image : 'events/'.basename($event->image))) }}" 
                                                          class="img-fluid w-100" 
                                                          alt="{{ $event->title }}">
                                                 </div>

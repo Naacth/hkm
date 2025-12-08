@@ -179,4 +179,51 @@ class Event extends Model
     {
         return $this->whatsapp_group_link;
     }
+
+    /**
+     * Get image URL with automatic path fixing
+     * Memastikan path gambar selalu benar, handle path yang tidak lengkap
+     */
+    public function getImageUrlAttribute()
+    {
+        if (!$this->image) {
+            return null;
+        }
+
+        // Jika path sudah lengkap dengan folder events/
+        if (str_contains($this->image, 'events/')) {
+            return asset('uploads/' . $this->image);
+        }
+
+        // Jika path hanya nama file (tanpa folder), tambahkan events/
+        if (!str_contains($this->image, '/')) {
+            return asset('uploads/events/' . $this->image);
+        }
+
+        // Jika path sudah benar (ada folder lain), gunakan langsung
+        return asset('uploads/' . $this->image);
+    }
+
+    /**
+     * Get QRIS image URL with automatic path fixing
+     */
+    public function getQrisImageUrlAttribute()
+    {
+        if (!$this->qris_image_path) {
+            return null;
+        }
+
+        // Jika path sudah lengkap dengan folder qris/
+        if (str_contains($this->qris_image_path, 'qris/')) {
+            return asset('uploads/' . $this->qris_image_path);
+        }
+
+        // Jika path hanya nama file (tanpa folder), tambahkan qris/
+        if (!str_contains($this->qris_image_path, '/')) {
+            return asset('uploads/qris/' . $this->qris_image_path);
+        }
+
+        // Jika path sudah benar (ada folder lain), gunakan langsung
+        return asset('uploads/' . $this->qris_image_path);
+    }
 }

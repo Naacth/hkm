@@ -30,7 +30,7 @@
                     <div class="row align-items-center">
                         <div class="col-md-3">
                             @if($event->image)
-                                <img src="{{ asset('uploads/' . $event->image) }}" 
+                                <img src="{{ asset('uploads/' . (str_contains($event->image, 'events/') ? $event->image : 'events/'.basename($event->image))) }}" 
                                      alt="{{ $event->title }}" 
                                      class="img-fluid rounded-3"
                                      style="width: 100%; height: 120px; object-fit: cover;"

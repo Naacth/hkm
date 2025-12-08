@@ -1,0 +1,161 @@
+📁 STRUKTUR FOLDER public_html DI HOSTING (Hostinger)
+=====================================================
+
+Berdasarkan URL yang muncul: https://himakomuym.web.id/uploads/events/event-xxx.jpg
+Ini berarti struktur di hosting adalah:
+
+public_html/
+│
+├── 📄 .env                          (File konfigurasi)
+├── 📄 .htaccess                     (Apache rewrite rules)
+├── 📄 index.php                     (Entry point Laravel)
+├── 📄 favicon.ico
+├── 📄 robots.txt
+│
+├── 📁 uploads/                       ⭐ FOLDER UPLOAD GAMBAR
+│   │
+│   ├── 📁 events/                   ⭐ GAMBAR EVENT HARUS ADA DI SINI
+│   │   ├── 📷 event-1765162704.jpg  ← FILE INI HARUS ADA!
+│   │   ├── 📷 event-1764696907.jpg
+│   │   ├── 📷 event-xxx.jpg
+│   │   └── ...
+│   │
+│   ├── 📁 qris/                     (QRIS images)
+│   │   └── qris-xxx.jpg
+│   │
+│   ├── 📁 certificates/             (Certificate templates)
+│   │   ├── cert-xxx.jpg
+│   │   └── generated/
+│   │
+│   ├── 📁 products/                 (Product images)
+│   │   └── product-xxx.jpg
+│   │
+│   ├── 📁 galeris/                  (Gallery images)
+│   │   └── gallery-xxx.jpg
+│   │
+│   ├── 📁 divisis/                  (Division photos)
+│   ├── 📁 divisi-members/           (Member photos)
+│   ├── 📁 kabinets/                 (Cabinet photos)
+│   ├── 📁 abouts/                   (About images)
+│   └── 📁 proof_of_payments/        (Payment proofs)
+│
+├── 📁 build/                        (Compiled assets - Vite)
+│   ├── assets/
+│   └── manifest.json
+│
+├── 📁 app/                          (Application code)
+├── 📁 bootstrap/                    (Bootstrap files)
+├── 📁 config/                       (Configuration)
+├── 📁 database/                     (Migrations, seeders)
+├── 📁 resources/                    (Views, CSS, JS source)
+├── 📁 routes/                       (Route definitions)
+├── 📁 storage/                      (Logs, cache, sessions)
+└── 📁 vendor/                       (Composer dependencies)
+
+
+🔍 CARA CEK STRUKTUR DI HOSTING ANDA:
+=====================================
+
+VIA FILE MANAGER HOSTINGER:
+----------------------------
+1. Login ke Hostinger
+2. Buka "File Manager"
+3. Navigate ke: public_html
+4. Lihat apakah ada folder "uploads"
+5. Buka folder "uploads" → lihat apakah ada folder "events"
+6. Buka folder "events" → lihat file gambar yang ada
+
+VIA SSH:
+--------
+cd public_html
+ls -la                    # Lihat semua file dan folder
+ls -la uploads/           # Lihat isi folder uploads
+ls -la uploads/events/     # Lihat file gambar event
+
+
+📍 LOKASI FILE GAMBAR EVENT:
+===========================
+
+URL di browser:
+https://himakomuym.web.id/uploads/events/event-1765162704.jpg
+
+File harus ada di:
+public_html/uploads/events/event-1765162704.jpg
+
+
+✅ CHECKLIST:
+=============
+
+[ ] Folder public_html/uploads/ ada
+[ ] Folder public_html/uploads/events/ ada
+[ ] File event-1765162704.jpg ada di public_html/uploads/events/
+[ ] Permission folder uploads/ adalah 775
+[ ] Permission file gambar adalah 644
+[ ] File .htaccess di root public_html sudah benar
+
+
+🔧 COMMAND UNTUK SETUP:
+=======================
+
+# Masuk ke public_html
+cd public_html
+
+# Buat folder jika belum ada
+mkdir -p uploads/events
+mkdir -p uploads/qris
+mkdir -p uploads/certificates
+mkdir -p uploads/products
+mkdir -p uploads/galeris
+
+# Set permission
+chmod -R 775 uploads
+find uploads -type f -exec chmod 644 {} \;
+
+# Cek struktur
+ls -la uploads/
+ls -la uploads/events/
+
+
+📤 CARA UPLOAD FILE GAMBAR:
+===========================
+
+VIA FTP (FileZilla):
+--------------------
+1. Buka FileZilla
+2. Connect ke hosting
+3. Navigate ke: public_html/uploads/events/
+4. Upload semua file dari folder lokal: public/uploads/events/
+5. Pastikan file event-1765162704.jpg ter-upload
+
+VIA FILE MANAGER:
+-----------------
+1. Login ke Hostinger
+2. Buka File Manager
+3. Navigate ke: public_html/uploads/events/
+4. Klik "Upload"
+5. Pilih semua file gambar dari folder lokal
+6. Upload
+
+
+⚠️ CATATAN PENTING:
+===================
+
+1. Path di database: events/event-xxx.jpg (tanpa prefix uploads/)
+2. URL yang dihasilkan: https://domain.com/uploads/events/event-xxx.jpg
+3. File fisik harus ada di: public_html/uploads/events/event-xxx.jpg
+4. Permission folder: 775 (rwxrwxr-x)
+5. Permission file: 644 (rw-r--r--)
+
+
+🚨 TROUBLESHOOTING:
+===================
+
+Masalah: Folder uploads tidak ada
+Solusi: mkdir -p public_html/uploads/events
+
+Masalah: File tidak bisa diakses
+Solusi: chmod -R 775 public_html/uploads
+
+Masalah: Permission denied
+Solusi: chown -R username:username public_html/uploads
+
